@@ -1,0 +1,63 @@
+.sitecontainer{
+    width: 610px;
+    height: 410px;
+    margin: 0 auto;
+    margin-top: 100px;
+    font-family: Verdana;
+    font-size: small;
+    background-color: lightgray;
+}
+
+.panel{
+    margin: 5px;
+}
+
+.box{
+    margin-bottom: 10px;
+}
+
+#slogobox{
+    float: left;
+    width: 340px;
+    height: 400px;
+    background-color: aliceblue;
+}
+
+#rightpanel{
+    float: right;
+    width: 250px;
+}
+
+.input input{
+    width: 40%;
+    float: right;
+    clear: right;
+
+}
+
+.label{
+    float: left;
+    clear: left;
+
+}
+
+.inpair{
+    width: 100%;
+    float: left;
+    clear: both;
+}
+
+
+#signupbox{
+    background-color: mistyrose;
+}
+
+#loginbox{
+    background-color: antiquewhite;
+}
+
+
+
+body{
+    background-color: indianred;
+}
