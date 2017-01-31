@@ -1,63 +1,67 @@
-.sitecontainer{
-    width: 610px;
-    height: 410px;
-    margin: 0 auto;
+body {
+    font: 13px verdana;
+}
+
+.container {
+    position: relative; /* Children inherits position from this element and not window itself */
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 100px;
-    font-family: Verdana;
-    font-size: small;
-    background-color: lightgray;
-}
-
-.panel{
-    margin: 5px;
-}
-
-.box{
-    margin-bottom: 10px;
-}
-
-#slogobox{
-    float: left;
-    width: 340px;
+    width: 600px;
     height: 400px;
     background-color: aliceblue;
 }
 
-#rightpanel{
-    float: right;
+.leftpanel {
+    position: absolute;
+
+    width: 340px;
+    height: 400px;
+    background-color: aquamarine;
+}
+
+.rightpanel {
+    position: absolute;
+    right: 0px;
+
     width: 250px;
+    height: 400px;
+    background-color: beige;
 }
 
-.input input{
-    width: 40%;
-    float: right;
-    clear: right;
+#loginbox {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 80px;
+    background-color: lightpink;
+}
+
+#signupbox {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 310px;
+    background-color: darksalmon;
 
 }
 
-.label{
-    float: left;
-    clear: left;
-
-}
-
-.inpair{
+.row {
+    margin-top: 5px;
     width: 100%;
-    float: left;
-    clear: both;
+    height: 30px;
+    line-height: 30px;
 }
 
-
-#signupbox{
-    background-color: mistyrose;
+input {
+    float: right;
+    width: 60%;
 }
 
-#loginbox{
-    background-color: antiquewhite;
-}
-
-
-
-body{
-    background-color: indianred;
+select {
+    float: right;
 }
