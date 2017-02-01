@@ -16,10 +16,37 @@ window.onload = function(){
 var init = function() {
     displayView();
 
-}
-
+};
 var passwordHelper = function() {
-    var pwinput = document.getElementById("pw").value;
-    var rptpwinput = document.getElementById("rptpw").value;
+    var password = document.getElementById("passwordinput").value;
+    var repeatpassword = document.getElementById("repeatpasswordinput").value;
+    var etbelement = document.getElementsByClassName("errortextbox");
 
-}
+
+    if( password === "" ){
+        /* clear text in error text box */
+        etbelement[0].innerHTML="";
+    }
+    else if( password.length < 8 ){
+        etbelement[0].id="etbnotok";
+        etbelement[0].innerHTML="Password too short";
+
+    }
+    else if( password === repeatpassword ){
+        /* match text and style in error text box */
+        etbelement[0].id="etbok";
+
+        if( password === "password"){
+            etbelement[0].innerHTML="I deserve this";
+        }
+        else{
+            etbelement[0].innerHTML="Password OK";
+        }
+    }
+    else{
+        /* mismatch text and style in error text box */
+        etbelement[0].id="etbnotok";
+        etbelement[0].innerHTML="Passwords do not match";
+    }
+
+};

@@ -67,6 +67,28 @@ body {
     line-height: 26px;
 }
 
+.errortextbox {
+    float: left;
+    margin-top: 2px;
+    height: 26px;
+    line-height: 26px;
+    font-family: fantasy;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#etbnotok.errortextbox {
+    color: red;
+}
+
+#etbok.errortextbox {
+    color: green;
+}
+
+#submit2 {
+    width: 30%;
+}
+
 input {
     float: right;
     font-size: 11px;
