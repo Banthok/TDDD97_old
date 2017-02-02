@@ -37,12 +37,11 @@ var attachHandlers = function() {
         pwinputelement.addEventListener("input", passwordHelper);
         rptpwinputelement.addEventListener("input", passwordHelper);
 
-        /* attach signupformSubmit */
+       /*  attach signupformSubmit */
         var signupform = document.getElementById("signupform");
 
-        signupsubmit.addEventListener("submit", signupformSubmit);
+        signupform.addEventListener("submit", signupformSubmit);
     }
-
 };
 var passwordHelper = function() {
     var password = document.getElementById("passwordinput").value;
@@ -79,11 +78,16 @@ var passwordHelper = function() {
 
 };
 var loginformSubmit = function() {
-  var newLogin =    {"email":       document.getElementById("loginemailinput").value,
+    var newLogin =    {"email":       document.getElementById("loginemailinput").value,
                     "password":     document.getElementById("loginpasswordinput").value
     };
 
-    serverstub.signIn(newLogin);
+    var loginstatus = serverstub.signIn(newLogin);
+
+    if( loginstatus.success ){
+        /* continue here */
+
+    }
 };
 var signupformSubmit = function() {
     if( ! passwordHelper() ){
@@ -98,7 +102,7 @@ var signupformSubmit = function() {
                     "country":      document.getElementById("countryinput").value,
                     "password":     document.getElementById("passwordinput").value
     };
-
+    alert("about to sign up on server");
     serverstub.signUp(newSignee);
     return false; /*  ?? */
 };
