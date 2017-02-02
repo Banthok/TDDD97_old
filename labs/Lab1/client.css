@@ -51,7 +51,7 @@ body {
 }
 
 #signupheader {
-    font-family: fantasy;
+    font-family: arial;
     font-size: 14px;
     font-weight: bolder;
     height: 40px;
@@ -72,7 +72,7 @@ body {
     margin-top: 2px;
     height: 26px;
     line-height: 26px;
-    font-family: fantasy;
+    font-family: arial;
     font-size: 12px;
     font-weight: bold;
 }
@@ -85,15 +85,23 @@ body {
     color: green;
 }
 
-#submit2 {
+#loginsubmit {
     width: 30%;
+    height: 26px;
+}
+
+#signupsubmit {
+    width: 30%;
+    height: 26px;
 }
 
 input {
     float: right;
     font-size: 11px;
+    height: 16px;
     width: 60%;
 }
+
 
 select {
     float: right;
