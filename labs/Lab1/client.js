@@ -21,12 +21,13 @@ var init = function() {
 };
 var attachHandlers = function() {
     var signupbox = document.getElementById("signupbox");
+    var loginbox = document.getElementById("loginbox");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
         var loginform = document.getElementById("loginform");
 
-        loginsubmit.addEventListener("submit", loginformSubmit);
+        loginform.addEventListener("submit", loginformSubmit);
     }
 
     if( signupbox != null ){
@@ -78,16 +79,17 @@ var passwordHelper = function() {
 
 };
 var loginformSubmit = function() {
-    var newLogin =    {"email":       document.getElementById("loginemailinput").value,
-                    "password":     document.getElementById("loginpasswordinput").value
-    };
+    var loginemail = document.getElementById("loginemailinput").value;
+    var loginpassword = document.getElementById("loginpasswordinput").value;
 
-    var loginstatus = serverstub.signIn(newLogin);
+    var loginstatus = serverstub.signIn(loginemail, loginpassword);
 
     if( loginstatus.success ){
-        /* continue here */
-
+        var localtoken = {"token": loginstatus.data};
+        localStorage.setItem("localtoken", JSON.stringify(localtoken));
+        // add: change view to profile view
     }
+    // add: display error message in loginbox until loginbox interact
 };
 var signupformSubmit = function() {
     if( ! passwordHelper() ){
