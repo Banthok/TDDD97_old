@@ -2,15 +2,38 @@
  * Created by matla782 on 2017-01-24.
  */
 displayView = function(){
-    // the code required to display a view
-    document.getElementById("welcomediv").innerHTML=document.getElementById("welcomeview").innerHTML;
+    // CHANGE TO: display a view based on whether localStorage has a valid token
+
+
+
+    var tokenobject;
+    var tokenresponse;
+    if (localStorage.getItem("localtoken") === null) {
+        tokenobject = {};
+        document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
+        return;
+    } else {
+        tokenobject = JSON.parse(localStorage.getItem("localtoken"));
+        tokenresponse = serverstub.getUserDataByToken(tokenobject.token);
+    }
+    if (tokenresponse.success){
+        displayProfileView();
+
+    }
+    else{
+        document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
+    }
+
+
+
+};
+displayProfileView = function(){
+    document.getElementById("viewdiv").innerHTML=document.getElementById("profileview").innerHTML;
 };
 window.onload = function(){
-    alert("page refreshed");
-    //code that is executed as the page is loaded.
+        //code that is executed as the page is loaded.
     //You shall put your own custom code here.
     //window.alert() is not allowed to be used in your implementation.
-    //window.alert("Shkreli hails you!");
     init();
 
 };
@@ -27,57 +50,56 @@ var attachHandlers = function() {
         /* attach loginformSubmit */
         var loginform = document.getElementById("loginform");
 
-        loginform.addEventListener("submit", loginformSubmit);
+        loginform.setAttribute("onsubmit", "loginformSubmit();return false" );
     }
 
     if( signupbox != null ){
-        /* attach passwordHelper */
+        /* attach signupPasswordHelper */
         var pwinputelement = document.getElementById("passwordinput");
         var rptpwinputelement = document.getElementById("repeatpasswordinput");
 
-        pwinputelement.addEventListener("input", passwordHelper);
-        rptpwinputelement.addEventListener("input", passwordHelper);
+        pwinputelement.addEventListener("input", signupPasswordHelper);
+        rptpwinputelement.addEventListener("input", signupPasswordHelper);
 
        /*  attach signupformSubmit */
         var signupform = document.getElementById("signupform");
 
-        signupform.addEventListener("submit", signupformSubmit);
+
+        signupform.setAttribute("onsubmit","signupformSubmit(); return false");
     }
 };
-var passwordHelper = function() {
+var signupPasswordHelper = function() {
     var password = document.getElementById("passwordinput").value;
     var repeatpassword = document.getElementById("repeatpasswordinput").value;
-    var etbelement = document.getElementsByClassName("errortextbox");
+    var SUETBelement = document.getElementById("signuperrortextbox");
 
     if( password === "" ){
         /* clear text in error text box */
-        etbelement[0].innerHTML="";
+        SUETBelement.innerHTML="";
     }
     else if( password.length < 4 ){
-        etbelement[0].id="etbnotok";
-        etbelement[0].innerHTML="Password too short";
-
+        SUETBelement.style.color="red";
+        SUETBelement.innerHTML="Password too short";
     }
     else if( password === repeatpassword ){
-        /* match text and style in error text box */
-        etbelement[0].id="etbok";
+        SUETBelement.style.color="green";
 
         if( password === "password"){
-            etbelement[0].innerHTML="I deserve this";
+            SUETBelement.innerHTML="I deserve this";
         }
         else{
-            etbelement[0].innerHTML="Password OK";
+            SUETBelement.innerHTML="Password OK";
             return true;
         }
     }
     else{
-        /* mismatch text and style in error text box */
-        etbelement[0].id="etbnotok";
-        etbelement[0].innerHTML="Passwords do not match";
+        SUETBelement.style.color = "red";
+        SUETBelement.innerHTML = "Passwords do not match";
     }
     return false;
 
 };
+
 var loginformSubmit = function() {
     var loginemail = document.getElementById("loginemailinput").value;
     var loginpassword = document.getElementById("loginpasswordinput").value;
@@ -87,22 +109,27 @@ var loginformSubmit = function() {
     if( loginstatus.success ){
         var localtoken = {"token": loginstatus.data};
         localStorage.setItem("localtoken", JSON.stringify(localtoken));
-        // add: change view to profile view
+        displayProfileView();
     }
-    // add: display error message in loginbox until loginbox interact
+    else{
+        document.getElementById("loginerrortextbox").innerHTML = loginstatus.message;
+    }
+    return false; /* ? */
+
 };
+
 var signupformSubmit = function() {
-    if( ! passwordHelper() ){
+    if( ! signupPasswordHelper() ){
         return false; /*  ?? */
     }
 
     var newSignee = {"email":       document.getElementById("emailinput").value,
-                    "firstname":    document.getElementById("firstnameinput").value,
-                    "familyname":   document.getElementById("familynameinput").value,
-                    "gender":       document.getElementById("genderinput").value,
-                    "city":         document.getElementById("cityinput").value,
-                    "country":      document.getElementById("countryinput").value,
-                    "password":     document.getElementById("passwordinput").value
+                "firstname":    document.getElementById("firstnameinput").value,
+                "familyname":   document.getElementById("familynameinput").value,
+                "gender":       document.getElementById("genderinput").value,
+                "city":         document.getElementById("cityinput").value,
+                "country":      document.getElementById("countryinput").value,
+                "password":     document.getElementById("passwordinput").value
     };
     alert("about to sign up on server");
     serverstub.signUp(newSignee);

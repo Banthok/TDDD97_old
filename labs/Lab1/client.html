@@ -15,7 +15,7 @@
                     <form id="loginform" onsubmit="">
                         <div class="row"><label>Email</label><input id="loginemailinput" type="text" required /></div>
                         <div class="row"><label>Password</label><input id="loginpasswordinput" type="password" required /></div>
-                        <div class="row"><input id="loginsubmit" type="submit" value="Log in" /></div>
+                        <div class="row"><div id="loginerrortextbox" class="errortextbox"></div><input id="loginsubmit" type="submit" value="Log in" /></div>
                     </form>
                 </div>
                 <div id="signupbox">
@@ -34,7 +34,7 @@
                         <div class="row"><label>Country</label><input id="countryinput" type="text" required /></div>
                         <div class="row"><label>Password</label><input id="passwordinput" type="password" required /></div>
                         <div class="row"><label>Repeat PSW</label><input id="repeatpasswordinput" type="password" required /></div>
-                        <div class="row"><div class="errortextbox"></div><input id="signupsubmit" type="submit" value="Sign up" /></div>
+                        <div class="row"><div id="signuperrortextbox" class="errortextbox"></div><input id="signupsubmit" type="submit" value="Sign up" /></div>
                     </form>
 
                 </div>
@@ -46,6 +46,6 @@
     <!-- <title>RIGHT WING DEATH SQUAD - Volume 3: Thot Patrol</title> -->
 </head>
 <body>
-    <div id="welcomediv"></div>
+    <div id="viewdiv"></div>
 </body>
 </html>

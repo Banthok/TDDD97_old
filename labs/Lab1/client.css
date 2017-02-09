@@ -77,14 +77,6 @@ body {
     font-weight: bold;
 }
 
-#etbnotok.errortextbox {
-    color: red;
-}
-
-#etbok.errortextbox {
-    color: green;
-}
-
 #loginsubmit {
     width: 30%;
     height: 26px;
