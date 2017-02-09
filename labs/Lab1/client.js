@@ -1,37 +1,39 @@
 /**
- * Created by matla782 on 2017-01-24.
+ *
  */
-displayView = function(){
-    // CHANGE TO: display a view based on whether localStorage has a valid token
-
-
-
-    var tokenobject;
+var displayView = function(){
+    var localtokenobject;
     var tokenresponse;
-    if (localStorage.getItem("localtoken") === null) {
-        tokenobject = {};
-        document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
-        return;
-    } else {
-        tokenobject = JSON.parse(localStorage.getItem("localtoken"));
-        tokenresponse = serverstub.getUserDataByToken(tokenobject.token);
-    }
-    if (tokenresponse.success){
-        displayProfileView();
 
+    if (localStorage.getItem("localtoken") === null) {
+        // No token in localStorage
+        displayWelcomeView();
     }
     else{
-        document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
+        localtokenobject = JSON.parse(localStorage.getItem("localtoken"));
+        tokenresponse = serverstub.getUserDataByToken(localtokenobject.token);
+
+        if (tokenresponse.success){
+            // Token is valid
+            displayProfileView();
+        }
+        else{
+            // Token is invalid
+            displayWelcomeView();
+        }
     }
 
-
-
 };
-displayProfileView = function(){
+var displayWelcomeView = function(){
+    document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
+
+}
+var displayProfileView = function(){
     document.getElementById("viewdiv").innerHTML=document.getElementById("profileview").innerHTML;
+
 };
 window.onload = function(){
-        //code that is executed as the page is loaded.
+    //code that is executed as the page is loaded.
     //You shall put your own custom code here.
     //window.alert() is not allowed to be used in your implementation.
     init();
@@ -63,7 +65,6 @@ var attachHandlers = function() {
 
        /*  attach signupformSubmit */
         var signupform = document.getElementById("signupform");
-
 
         signupform.setAttribute("onsubmit","signupformSubmit(); return false");
     }
@@ -99,7 +100,6 @@ var signupPasswordHelper = function() {
     return false;
 
 };
-
 var loginformSubmit = function() {
     var loginemail = document.getElementById("loginemailinput").value;
     var loginpassword = document.getElementById("loginpasswordinput").value;
@@ -114,13 +114,11 @@ var loginformSubmit = function() {
     else{
         document.getElementById("loginerrortextbox").innerHTML = loginstatus.message;
     }
-    return false; /* ? */
 
 };
-
 var signupformSubmit = function() {
     if( ! signupPasswordHelper() ){
-        return false; /*  ?? */
+        return;
     }
 
     var newSignee = {"email":       document.getElementById("emailinput").value,
@@ -133,5 +131,5 @@ var signupformSubmit = function() {
     };
     alert("about to sign up on server");
     serverstub.signUp(newSignee);
-    return false; /*  ?? */
+
 };
