@@ -8,9 +8,12 @@ body {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100px;
+    background-color: mistyrose;
+}
+
+#welcomecontainer {
     width: 600px;
     height: 400px;
-    background-color: mistyrose;
 }
 
 .leftpanel {
@@ -94,7 +97,40 @@ input {
     width: 60%;
 }
 
-
 select {
     float: right;
+}
+
+/* PROFILE PAGE STYLES */
+
+#profilecontainer {
+    width: 800px;
+}
+
+.tabselector {
+    position: relative;
+    float: left;
+
+    height: 25px;
+    width: 80px;
+    margin-right: 10px;
+
+    line-height: 25px;
+    text-align: center;
+    background-color: #fff0f5;
+}
+
+.tab {
+    clear: both;
+}
+
+#hometab {
+}
+
+#browsetab {
+    display: none;
+}
+
+#accounttab {
+    display: none;
 }

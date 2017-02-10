@@ -47,6 +47,7 @@ var init = function() {
 var attachHandlers = function() {
     var signupbox = document.getElementById("signupbox");
     var loginbox = document.getElementById("loginbox");
+    var tabselectors = document.getElementsByClassName("tabselector");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
@@ -68,6 +69,17 @@ var attachHandlers = function() {
 
         signupform.setAttribute("onsubmit","signupformSubmit(); return false");
     }
+
+    if( tabselectors != null ){
+        /* attach tab selector functions */
+        for( i = 0 ; i < tabselectors.length ; ++i ){
+            tabselectors[i].addEventListener("click", switchTabByTabSelector);
+            tabselectors[i].addEventListener("mouseover", tabselectorHighlight);
+            tabselectors[i].addEventListener("mouseleave", tabselectorNormalize);
+        }
+
+    }
+
 };
 var signupPasswordHelper = function() {
     var password = document.getElementById("passwordinput").value;
@@ -131,5 +143,23 @@ var signupformSubmit = function() {
     };
     alert("about to sign up on server");
     serverstub.signUp(newSignee);
+
+};
+var switchTabByTabSelector = function() {
+    var tabs = document.getElementsByClassName("tab");
+
+    for( i = 0 ; i < tabs.length ; ++i ) {
+        tabs[i].style.display = "none";
+    }
+    // this.id == "<tabwewant>selector"
+    document.getElementById( this.id.substring( 0, this.id.search( "selector" ))).style.display = "block";
+
+};
+var tabselectorHighlight = function() {
+    document.getElementById(this.id).style.backgroundColor = "#f0e1e6";
+
+};
+var tabselectorNormalize = function(){
+    document.getElementById(this.id).style.backgroundColor = "#fff0f5";
 
 };
