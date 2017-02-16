@@ -37,6 +37,7 @@ window.onload = function(){
     //You shall put your own custom code here.
     //window.alert() is not allowed to be used in your implementation.
     init();
+    alert("page reloaded");
 
 };
 var init = function() {
@@ -48,6 +49,8 @@ var attachHandlers = function() {
     var signupbox = document.getElementById("signupbox");
     var loginbox = document.getElementById("loginbox");
     var tabselectors = document.getElementsByClassName("tabselector");
+    var changepasswordform = document.getElementById("changepasswordform");
+    var signoutbutton = document.getElementById("signoutbutton");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
@@ -79,6 +82,17 @@ var attachHandlers = function() {
         }
 
     }
+
+    if( changepasswordform != null ){
+        /* attach changepasswordformSubmit */
+        changepasswordform.setAttribute("onsubmit","changepasswordformSubmit(); return false");
+    }
+
+    if( signoutbutton != null ){
+        /* attach signoutbutton */
+        signoutbutton.addEventListener("click", logOutClick);
+    }
+
 
 };
 var signupPasswordHelper = function() {
@@ -161,5 +175,57 @@ var tabselectorHighlight = function() {
 };
 var tabselectorNormalize = function(){
     document.getElementById(this.id).style.backgroundColor = "#fff0f5";
+
+};
+
+var changepasswordformSubmit = function() {
+    var localtokenJSON = localStorage.getItem("localtoken");
+    var localtokenobject;
+    var CPWETBelement = document.getElementById("changepassworderrortextbox");
+    var changepasswordresponse;
+
+    if( localtokenJSON === null ){
+        // No token in local storage
+        alert("How?");
+    }
+    else {
+        localtokenobject = JSON.parse(localtokenJSON);
+        changepasswordresponse = serverstub.changePassword(
+            localtokenobject.token,
+            document.getElementById("oldpasswordinput").value,
+            document.getElementById("newpasswordinput").value
+        );
+
+        CPWETBelement.innerHTML = changepasswordresponse.message;
+        if( changepasswordresponse.success ){
+            CPWETBelement.style.color = "green";
+        }
+        else{
+            CPWETBelement.style.color = "red";
+        }
+    }
+};
+
+var logOutClick = function() {
+    var localtokenJSON = localStorage.getItem("localtoken");
+    var localtokenobject;
+    var signoutresponse;
+
+    if( localtokenJSON === null ){
+        // No token in local storage
+        alert("How?");
+    }
+    else{
+        localtokenobject = JSON.parse(localtokenJSON);
+        signoutresponse = serverstub.signOut(localtokenobject.token);
+
+        if( signoutresponse.success ){
+            localStorage.removeItem("localtoken");
+            displayWelcomeView();
+        }
+        else{
+            alert(signoutresponse.message);
+        }
+    }
 
 };

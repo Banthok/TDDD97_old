@@ -46,9 +46,27 @@
             <div class="tabselector" id="hometabselector" onmouseover="" onmouseleave="" onclick="">Home</div>
             <div class="tabselector" id="browsetabselector" onmouseover="" onmouseleave="" onclick="">Browse</div>
             <div class="tabselector" id="accounttabselector" onmouseover="" onmouseleave="" onclick="">Account</div>
-            <div class="tab" id="hometab">This is the home tab</div>
-            <div class="tab" id="browsetab">This is the browse tab</div>
-            <div class="tab" id="accounttab">This is the account tab</div>
+            <div class="tab" id="hometab">
+                Hometab
+
+            </div>
+            <div class="tab" id="browsetab">
+                This is the browse tab
+            </div>
+            <div class="tab" id="accounttab">
+                <div id="accountleftpanel">
+                    <form id="changepasswordform" onsubmit="">
+                        <p>Change password?</p>
+                        <div class="row"><label>Old Password</label><input id="oldpasswordinput" type="password" required /></div>
+                        <div class="row"><label>New Password</label><input id="newpasswordinput" type="password" required /></div>
+                        <div class="row"><label>Repeat New</label><input id="repeatnewpasswordinput" type="password" required /></div>
+                        <div class="row"><div id="changepassworderrortextbox" class="errortextbox"></div><input id="changepasswordsubmit" type="submit" value="Yah" /></div>
+                    </form>
+                </div>
+                <div id="accountrightpanel">
+                    <button id="signoutbutton" type="button" onclick="">Log out</button>
+                </div>
+            </div>
         </div>
     </script>
     <title>Politically vanilla and neutral social networking site</title>

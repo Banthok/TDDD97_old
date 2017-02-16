@@ -105,6 +105,7 @@ select {
 
 #profilecontainer {
     width: 800px;
+    height: 400px;
 }
 
 .tabselector {
@@ -114,7 +115,6 @@ select {
     height: 25px;
     width: 80px;
     margin-right: 10px;
-
     line-height: 25px;
     text-align: center;
     background-color: #fff0f5;
@@ -124,13 +124,35 @@ select {
     clear: both;
 }
 
+/* PROFILE PAGE: HOME */
+
 #hometab {
 }
+
+/* PROFILE PAGE: BROWSE */
 
 #browsetab {
     display: none;
 }
 
+/* PROFILE PAGE: ACCOUNT */
+
 #accounttab {
     display: none;
+}
+
+#accountleftpanel {
+    position: absolute;
+    left: 0px;
+    width: 300px;
+}
+
+#accountrightpanel {
+    position: absolute;
+    right: 0px;
+    width: 300px;
+}
+#changepasswordsubmit {
+    width: 25%;
+    height: 26px;
 }
