@@ -1,6 +1,7 @@
 /**
  *
  */
+/* TODO change to storing personal info after login in localStorage? */
 var displayView = function(){
     var localtokenobject;
     var tokenresponse;
@@ -15,7 +16,7 @@ var displayView = function(){
 
         if (tokenresponse.success){
             // Token is valid
-            displayProfileView();
+            displayProfileView(tokenresponse.data);
         }
         else{
             // Token is invalid
@@ -26,10 +27,38 @@ var displayView = function(){
 };
 var displayWelcomeView = function(){
     document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
+    attachHandlers();
 
 }
-var displayProfileView = function(){
+var displayProfileView = function(dataobject){
     document.getElementById("viewdiv").innerHTML=document.getElementById("profileview").innerHTML;
+
+    var firstnameholders = document.getElementsByClassName("firstnamespan");
+    for( i = 0 ; i < firstnameholders.length ; ++i ){
+        firstnameholders[i].innerHTML=dataobject.firstname;
+    }
+    var familynameholders = document.getElementsByClassName("familynamespan");
+    for( i = 0 ; i < familynameholders.length ; ++i ){
+        familynameholders[i].innerHTML=dataobject.familyname;
+    }
+    var genderholders = document.getElementsByClassName("genderspan");
+    for( i = 0 ; i < genderholders.length ; ++i ){
+        genderholders[i].innerHTML=dataobject.gender;
+    }
+    var emailholders = document.getElementsByClassName("emailspan");
+    for( i = 0 ; i < emailholders.length ; ++i ){
+        emailholders[i].innerHTML=dataobject.email;
+    }
+    var cityholders = document.getElementsByClassName("cityspan");
+    for( i = 0 ; i < cityholders.length ; ++i ){
+        cityholders[i].innerHTML=dataobject.city;
+    }
+    var countryholders = document.getElementsByClassName("countryspan");
+    for( i = 0 ; i < countryholders.length ; ++i ){
+        countryholders[i].innerHTML=dataobject.country;
+    }
+
+    attachHandlers();
 
 };
 window.onload = function(){
@@ -42,7 +71,6 @@ window.onload = function(){
 };
 var init = function() {
     displayView();
-    attachHandlers();
 
 };
 var attachHandlers = function() {
@@ -51,6 +79,7 @@ var attachHandlers = function() {
     var tabselectors = document.getElementsByClassName("tabselector");
     var changepasswordform = document.getElementById("changepasswordform");
     var signoutbutton = document.getElementById("signoutbutton");
+    var postbutton = document.getElementById("postbutton");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
@@ -93,6 +122,10 @@ var attachHandlers = function() {
         signoutbutton.addEventListener("click", logOutClick);
     }
 
+    if( postbutton != null ){
+        /* attach postbutton */
+        postbutton.addEventListener("click", postMessageClick);
+    }
 
 };
 var signupPasswordHelper = function() {
@@ -177,7 +210,6 @@ var tabselectorNormalize = function(){
     document.getElementById(this.id).style.backgroundColor = "#fff0f5";
 
 };
-
 var changepasswordformSubmit = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
@@ -204,8 +236,8 @@ var changepasswordformSubmit = function() {
             CPWETBelement.style.color = "red";
         }
     }
-};
 
+};
 var logOutClick = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
@@ -228,4 +260,15 @@ var logOutClick = function() {
         }
     }
 
+};
+var selfPostClick = function() {
+    /* change to storing personal info after login in localStorage? self post */
+    var token = localStorage.getItem("localtoken");
+    var content = document.getElementById("posttextarea").innerHTML;
+    var toEmail = document.getElementsByClassName("emailspan")[0].innerHTML;
+
+    clientPostMessage(token, content, toEmail);
+};
+var clientPostMessage = function(token, content, toEmail) {
+    serverstub.postMessage(token, content, toEmail);
 };

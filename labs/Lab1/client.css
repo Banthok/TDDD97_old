@@ -3,6 +3,10 @@ body {
     background-color: aquamarine;
 }
 
+textarea {
+    resize: none;
+}
+
 .container {
     position: relative; /* Children inherits position from this element and not window itself */
     margin-left: auto;
@@ -124,9 +128,26 @@ select {
     clear: both;
 }
 
+.profileleftpanel {
+    position: absolute;
+    left: 0px;
+    width: 300px;
+}
+
+.profilerightpanel {
+    position: absolute;
+    right: 0px;
+    width: 300px;
+}
+
 /* PROFILE PAGE: HOME */
 
 #hometab {
+}
+
+#posttextarea {
+    width: 296px;
+    height: 150px;
 }
 
 /* PROFILE PAGE: BROWSE */
@@ -142,15 +163,11 @@ select {
 }
 
 #accountleftpanel {
-    position: absolute;
-    left: 0px;
-    width: 300px;
+
 }
 
 #accountrightpanel {
-    position: absolute;
-    right: 0px;
-    width: 300px;
+
 }
 #changepasswordsubmit {
     width: 25%;

@@ -47,14 +47,27 @@
             <div class="tabselector" id="browsetabselector" onmouseover="" onmouseleave="" onclick="">Browse</div>
             <div class="tabselector" id="accounttabselector" onmouseover="" onmouseleave="" onclick="">Account</div>
             <div class="tab" id="hometab">
-                Hometab
-
+                <div class="profileleftpanel" id="homeleftpanel">
+                    <p>Hello <span class="firstnamespan"></span> <span class="familynamespan"></span>!</p>
+                    <p>Account information</p>
+                    <p>
+                        E-mail: <span class="emailspan"></span><br />
+                        Assumed gender: <span class="genderspan"></span><br />
+                        City: <span class="cityspan"></span><br />
+                        Country: <span class="countryspan"></span><br />
+                    </p>
+                </div>
+                <div class="profilerightpanel" id="homerightpanel">
+                    <textarea id="posttextarea">Hej. Det här är en jättebra textarea. Skriv gärna många saker här.
+                    </textarea>
+                    <button id="postbutton" type="button" formmethod="post" onclick="">Post</button>
+                </div>
             </div>
             <div class="tab" id="browsetab">
                 This is the browse tab
             </div>
             <div class="tab" id="accounttab">
-                <div id="accountleftpanel">
+                <div class="profileleftpanel" id="accountleftpanel">
                     <form id="changepasswordform" onsubmit="">
                         <p>Change password?</p>
                         <div class="row"><label>Old Password</label><input id="oldpasswordinput" type="password" required /></div>
@@ -63,7 +76,7 @@
                         <div class="row"><div id="changepassworderrortextbox" class="errortextbox"></div><input id="changepasswordsubmit" type="submit" value="Yah" /></div>
                     </form>
                 </div>
-                <div id="accountrightpanel">
+                <div class="profilerightpanel" id="accountrightpanel">
                     <button id="signoutbutton" type="button" onclick="">Log out</button>
                 </div>
             </div>
