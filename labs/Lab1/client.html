@@ -46,6 +46,7 @@
             <div class="tabselector" id="hometabselector" onmouseover="" onmouseleave="" onclick="">Home</div>
             <div class="tabselector" id="browsetabselector" onmouseover="" onmouseleave="" onclick="">Browse</div>
             <div class="tabselector" id="accounttabselector" onmouseover="" onmouseleave="" onclick="">Account</div>
+
             <div class="tab" id="hometab">
                 <div class="profileleftpanel" id="homeleftpanel">
                     <p>Hello <span class="firstnamespan"></span> <span class="familynamespan"></span>!</p>
@@ -58,17 +59,58 @@
                     </p>
                 </div>
                 <div class="profilerightpanel" id="homerightpanel">
-                    <textarea id="posttextarea">Hej. Det här är en jättebra textarea. Skriv gärna många saker här.
-                    </textarea>
+                    <textarea id="posttextarea" placeholder="Write something interdasting..."></textarea>
                     <button id="selfpostbutton" type="button" formmethod="post" onclick="">Post</button>
                 </div>
+
+
                 <div class="profilebottompanel" id="homebottompanel">
-                    Some content
+                <button id="clientwallrefresh" type="button" onclick"">Refresh</button>
+                    <div id="clientwall"></div>
+
+                    <div class="wallspacer"></div>
+
                 </div>
             </div>
+
             <div class="tab" id="browsetab">
-                This is the browse tab
+
+
+                <div id="browseusersinterface">
+                    <input id="browseuserinput" type="email" placeholder="Enter the email of a user" />
+                    <button id="browseuserbutton" type="button" onclick="">Find user</button>
+                </div>
+
+                <div id="userpagetemplate">
+
+                    <div class="profileleftpanel" id="browseleftpanel">
+                        <p>Hello <span class="firstnamespan"></span> <span class="familynamespan"></span>!</p>
+                        <p>Account information</p>
+                        <p>
+                            E-mail: <span class="emailspan"></span><br />
+                            Assumed gender: <span class="genderspan"></span><br />
+                            City: <span class="cityspan"></span><br />
+                            Country: <span class="countryspan"></span><br />
+                        </p>
+                    </div>
+                    <div class="profilerightpanel" id="browserightpanel">
+                        <textarea id="otherposttextarea" placeholder="Write something interdasting..."></textarea>
+                        <button id="otherpostbutton" type="button" formmethod="post" onclick="">Post</button>
+                    </div>
+
+
+                    <div class="profilebottompanel" id="browsebottompanel">
+                    <button id="userwallrefresh" type="button" onclick="">Refresh</button>
+                        <div id="userwall"></div>
+
+                        <div class="wallspacer"></div>
+
+                    </div>
+
+                </div>
+
             </div>
+
             <div class="tab" id="accounttab">
                 <div class="profileleftpanel" id="accountleftpanel">
                     <form id="changepasswordform" onsubmit="">

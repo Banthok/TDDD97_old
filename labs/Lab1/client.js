@@ -88,6 +88,8 @@ var attachHandlers = function() {
     var changepasswordform = document.getElementById("changepasswordform");
     var signoutbutton = document.getElementById("signoutbutton");
     var selfpostbutton = document.getElementById("selfpostbutton");
+    var clientwallrefreshbutton = document.getElementById("clientwallrefresh");
+    var fetchuserbutton = document.getElementById("browseuserbutton");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
@@ -126,13 +128,23 @@ var attachHandlers = function() {
     }
 
     if( signoutbutton != null ){
-        /* attach signoutbutton */
+        /* attach logOutClick */
         signoutbutton.addEventListener("click", logOutClick);
     }
 
     if( selfpostbutton != null ){
-        /* attach postbutton */
+        /* attach selfPostClick */
         selfpostbutton.addEventListener("click", selfPostClick);
+    }
+
+    if( clientwallrefreshbutton != null ){
+        /* attach updateClientWall */
+        clientwallrefreshbutton.addEventListener("click", updateClientWall);
+    }
+
+    if( fetchuserbutton != null ){
+        /* attach browseUserClick */
+        fetchuserbutton.addEventListener("click",browseUserClick);
     }
 
 };
@@ -287,13 +299,15 @@ var logOutClick = function() {
 };
 var selfPostClick = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
-    var content = document.getElementById("posttextarea").innerHTML;
+    var content = document.getElementById("posttextarea").value;
     var localdataJSON = localStorage.getItem("localdata");
 
     if( localtokenJSON != null
         && content != null
-        && localdataJSON != null ){
+        && localdataJSON != null
+        && content != ""){
         clientPostMessage(JSON.parse(localtokenJSON).token, content, JSON.parse(localdataJSON).email);
+        document.getElementById("posttextarea").value = "";
     }
 
 };
@@ -307,18 +321,39 @@ var updateClientWall = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
     var clientmessages = serverstub.getUserMessagesByToken(JSON.parse(localtokenJSON).token);
     var clientmessagesHTML = "";
-    var homewallelement = document.getElementById("homebottompanel");
+    var clientwallelement = document.getElementById("clientwall");
 
     if( clientmessages.success
-        && homewallelement != null ){
+        && clientwallelement != null ){
         for (i = 0; i < clientmessages.data.length; ++i) {
             clientmessagesHTML = clientmessagesHTML + "<p>" + clientmessages.data[i].writer + " wrote:</p>"
             + "<p>" + clientmessages.data[i].content + "</p><hr />";
         }
-        homewallelement.innerHTML = clientmessagesHTML;
+        clientwallelement.innerHTML = clientmessagesHTML;
     }
     else{
         /* endSession */
     }
 
 };
+
+var browseUserClick = function () {
+    var localtokenJSON = localStorage.getItem("localtoken");
+    var email = document.getElementById("browseuserinput").value;
+    var responsedata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token,email);
+    var responsemessages  = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
+
+    alert("rdata" + responsedata.message);
+    alert("rmsgs" + responsemessages.message);
+
+    if (responsedata.success && responsemessages.success){
+        /* fill in the profile of the user fetched into the browse tab*/
+        alert("vi har gjort fel");
+        document.getElementById("userpagetemplate").style.display = "block";
+
+
+        /* fill in that user's messages */
+
+    }
+
+}
