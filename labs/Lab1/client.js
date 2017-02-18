@@ -1,25 +1,31 @@
 /**
- *
+ * endSession and continueSession functions?
+ * Consider formmethod="get" and "post"
  */
-/* TODO change to storing personal info after login in localStorage? */
 var displayView = function(){
+    var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
+    var localdataobject;
     var tokenresponse;
 
-    if (localStorage.getItem("localtoken") === null) {
+    if (localtokenJSON === null) {
         // No token in localStorage
         displayWelcomeView();
     }
     else{
-        localtokenobject = JSON.parse(localStorage.getItem("localtoken"));
+        localtokenobject = JSON.parse(localtokenJSON);
         tokenresponse = serverstub.getUserDataByToken(localtokenobject.token);
 
         if (tokenresponse.success){
-            // Token is valid
-            displayProfileView(tokenresponse.data);
+            // Token is valid, store and use local data
+            localdataobject = tokenresponse.data;
+            localStorage.setItem("localdata", JSON.stringify(localdataobject));
+            displayProfileView(localdataobject);
         }
         else{
-            // Token is invalid
+            // Token is invalid, clear local data
+            localStorage.removeItem("localtoken");
+            localStorage.removeItem("localdata");
             displayWelcomeView();
         }
     }
@@ -29,7 +35,7 @@ var displayWelcomeView = function(){
     document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
     attachHandlers();
 
-}
+};
 var displayProfileView = function(dataobject){
     document.getElementById("viewdiv").innerHTML=document.getElementById("profileview").innerHTML;
 
@@ -58,6 +64,8 @@ var displayProfileView = function(dataobject){
         countryholders[i].innerHTML=dataobject.country;
     }
 
+    updateClientWall();
+
     attachHandlers();
 
 };
@@ -79,7 +87,7 @@ var attachHandlers = function() {
     var tabselectors = document.getElementsByClassName("tabselector");
     var changepasswordform = document.getElementById("changepasswordform");
     var signoutbutton = document.getElementById("signoutbutton");
-    var postbutton = document.getElementById("postbutton");
+    var selfpostbutton = document.getElementById("selfpostbutton");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
@@ -122,9 +130,9 @@ var attachHandlers = function() {
         signoutbutton.addEventListener("click", logOutClick);
     }
 
-    if( postbutton != null ){
+    if( selfpostbutton != null ){
         /* attach postbutton */
-        postbutton.addEventListener("click", postMessageClick);
+        selfpostbutton.addEventListener("click", selfPostClick);
     }
 
 };
@@ -162,13 +170,26 @@ var signupPasswordHelper = function() {
 var loginformSubmit = function() {
     var loginemail = document.getElementById("loginemailinput").value;
     var loginpassword = document.getElementById("loginpasswordinput").value;
+    var localtokenobject;
+    var localdataobject;
+    var tokenresponse;
 
     var loginstatus = serverstub.signIn(loginemail, loginpassword);
 
+
     if( loginstatus.success ){
-        var localtoken = {"token": loginstatus.data};
-        localStorage.setItem("localtoken", JSON.stringify(localtoken));
-        displayProfileView();
+        localtokenobject = {"token": loginstatus.data};
+        localStorage.setItem("localtoken", JSON.stringify(localtokenobject));
+
+        tokenresponse = serverstub.getUserDataByToken(localtokenobject.token);
+        if( tokenresponse.success ) {
+            localdataobject = tokenresponse.data;
+            localStorage.setItem("localdata", JSON.stringify(localdataobject));
+            displayProfileView(localdataobject);
+        }
+        else{
+            alert("! This token is so 2016 !. Server message: " + tokenresponse.message);
+        }
     }
     else{
         document.getElementById("loginerrortextbox").innerHTML = loginstatus.message;
@@ -198,8 +219,10 @@ var switchTabByTabSelector = function() {
     for( i = 0 ; i < tabs.length ; ++i ) {
         tabs[i].style.display = "none";
     }
-    // this.id == "<tabwewant>selector"
+    /* this.id == "<tabwewant>selector" */
     document.getElementById( this.id.substring( 0, this.id.search( "selector" ))).style.display = "block";
+    /* note the very polly nature of updateClientWall - to be changed? */
+    updateClientWall();
 
 };
 var tabselectorHighlight = function() {
@@ -253,6 +276,7 @@ var logOutClick = function() {
 
         if( signoutresponse.success ){
             localStorage.removeItem("localtoken");
+            localStorage.removeItem("localdata");
             displayWelcomeView();
         }
         else{
@@ -262,13 +286,39 @@ var logOutClick = function() {
 
 };
 var selfPostClick = function() {
-    /* change to storing personal info after login in localStorage? self post */
-    var token = localStorage.getItem("localtoken");
+    var localtokenJSON = localStorage.getItem("localtoken");
     var content = document.getElementById("posttextarea").innerHTML;
-    var toEmail = document.getElementsByClassName("emailspan")[0].innerHTML;
+    var localdataJSON = localStorage.getItem("localdata");
 
-    clientPostMessage(token, content, toEmail);
+    if( localtokenJSON != null
+        && content != null
+        && localdataJSON != null ){
+        clientPostMessage(JSON.parse(localtokenJSON).token, content, JSON.parse(localdataJSON).email);
+    }
+
 };
 var clientPostMessage = function(token, content, toEmail) {
     serverstub.postMessage(token, content, toEmail);
+    updateClientWall();
+
+};
+var updateClientWall = function() {
+    /* updateClientWall to eventually be a callback function? */
+    var localtokenJSON = localStorage.getItem("localtoken");
+    var clientmessages = serverstub.getUserMessagesByToken(JSON.parse(localtokenJSON).token);
+    var clientmessagesHTML = "";
+    var homewallelement = document.getElementById("homebottompanel");
+
+    if( clientmessages.success
+        && homewallelement != null ){
+        for (i = 0; i < clientmessages.data.length; ++i) {
+            clientmessagesHTML = clientmessagesHTML + "<p>" + clientmessages.data[i].writer + " wrote:</p>"
+            + "<p>" + clientmessages.data[i].content + "</p><hr />";
+        }
+        homewallelement.innerHTML = clientmessagesHTML;
+    }
+    else{
+        /* endSession */
+    }
+
 };

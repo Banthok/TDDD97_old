@@ -140,6 +140,12 @@ select {
     width: 300px;
 }
 
+.profilebottompanel {
+    position: relative;
+    top: 400px;
+    background-color: chartreuse;
+}
+
 /* PROFILE PAGE: HOME */
 
 #hometab {
@@ -162,13 +168,6 @@ select {
     display: none;
 }
 
-#accountleftpanel {
-
-}
-
-#accountrightpanel {
-
-}
 #changepasswordsubmit {
     width: 25%;
     height: 26px;
