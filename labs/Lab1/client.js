@@ -1,9 +1,9 @@
 /**
  * endSession and continueSession functions?
  * Consider formmethod="get" and "post"
- * separate refresh buttons browse/home?
- * global browseUser variables - YES
+ * make localdata global script variable as well instead of localStorage?
  * addEventListeners -> setAttributes
+ * change password should utilize the repeatbox
  */
 var browsecontext = {
     "email": undefined,
@@ -13,7 +13,7 @@ var browsecontext = {
     "city": undefined,
     "country": undefined
 };
-
+/* get away with with no value? no! browsecontext === undefined, while browsecontext.email -> exception */
 
 var displayView = function(){
     var localtokenJSON = localStorage.getItem("localtoken");
@@ -366,9 +366,6 @@ var browseUserClick = function () {
     var email = document.getElementById("browseuserinput").value;
     var browseuserdata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token, email);
     var browseusermessages = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
-
-    /* alert("data" + browseuserdata.message);
-    alert("msgs" + browseusermessages.message); */
 
     if( browseuserdata.success
         && browseusermessages.success ){
