@@ -1,6 +1,7 @@
 /**
  * endSession and continueSession functions?
  * Consider formmethod="get" and "post"
+ * separate refresh buttons browse/home?
  */
 var displayView = function(){
     var localtokenJSON = localStorage.getItem("localtoken");
@@ -39,27 +40,27 @@ var displayWelcomeView = function(){
 var displayProfileView = function(dataobject){
     document.getElementById("viewdiv").innerHTML=document.getElementById("profileview").innerHTML;
 
-    var firstnameholders = document.getElementsByClassName("firstnamespan");
+    var firstnameholders = document.getElementsByClassName("userfirstname");
     for( i = 0 ; i < firstnameholders.length ; ++i ){
         firstnameholders[i].innerHTML=dataobject.firstname;
     }
-    var familynameholders = document.getElementsByClassName("familynamespan");
+    var familynameholders = document.getElementsByClassName("userfamilyname");
     for( i = 0 ; i < familynameholders.length ; ++i ){
         familynameholders[i].innerHTML=dataobject.familyname;
     }
-    var genderholders = document.getElementsByClassName("genderspan");
+    var genderholders = document.getElementsByClassName("usergender");
     for( i = 0 ; i < genderholders.length ; ++i ){
         genderholders[i].innerHTML=dataobject.gender;
     }
-    var emailholders = document.getElementsByClassName("emailspan");
+    var emailholders = document.getElementsByClassName("useremail");
     for( i = 0 ; i < emailholders.length ; ++i ){
         emailholders[i].innerHTML=dataobject.email;
     }
-    var cityholders = document.getElementsByClassName("cityspan");
+    var cityholders = document.getElementsByClassName("usercity");
     for( i = 0 ; i < cityholders.length ; ++i ){
         cityholders[i].innerHTML=dataobject.city;
     }
-    var countryholders = document.getElementsByClassName("countryspan");
+    var countryholders = document.getElementsByClassName("usercountry");
     for( i = 0 ; i < countryholders.length ; ++i ){
         countryholders[i].innerHTML=dataobject.country;
     }
@@ -299,7 +300,7 @@ var logOutClick = function() {
 };
 var selfPostClick = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
-    var content = document.getElementById("posttextarea").value;
+    var content = document.getElementById("homeposttextarea").value;
     var localdataJSON = localStorage.getItem("localdata");
 
     if( localtokenJSON != null
@@ -307,7 +308,7 @@ var selfPostClick = function() {
         && localdataJSON != null
         && content != ""){
         clientPostMessage(JSON.parse(localtokenJSON).token, content, JSON.parse(localdataJSON).email);
-        document.getElementById("posttextarea").value = "";
+        document.getElementById("homeposttextarea").value = "";
     }
 
 };
@@ -325,7 +326,7 @@ var updateClientWall = function() {
 
     if( clientmessages.success
         && clientwallelement != null ){
-        for (i = 0; i < clientmessages.data.length; ++i) {
+        for( i = 0; i < clientmessages.data.length; ++i ){
             clientmessagesHTML = clientmessagesHTML + "<p>" + clientmessages.data[i].writer + " wrote:</p>"
             + "<p>" + clientmessages.data[i].content + "</p><hr />";
         }
@@ -340,20 +341,25 @@ var updateClientWall = function() {
 var browseUserClick = function () {
     var localtokenJSON = localStorage.getItem("localtoken");
     var email = document.getElementById("browseuserinput").value;
-    var responsedata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token,email);
-    var responsemessages  = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
+    var browseuserdata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token, email);
+    var browseusermessages = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
 
-    alert("rdata" + responsedata.message);
-    alert("rmsgs" + responsemessages.message);
+    /* alert("data" + browseuserdata.message);
+    alert("msgs" + browseusermessages.message); */
 
-    if (responsedata.success && responsemessages.success){
-        /* fill in the profile of the user fetched into the browse tab*/
-        alert("vi har gjort fel");
+    if( browseuserdata.success
+        && browseusermessages.success ){
+        /* fill in the template and make it visible */
         document.getElementById("userpagetemplate").style.display = "block";
 
+        document.getElementById("browsefirstname").innerHTML = browseuserdata.data.firstname;
+        document.getElementById("browsefamilyname").innerHTML = browseuserdata.data.familyname;
+        document.getElementById("browseemail").innerHTML = browseuserdata.data.email;
+        document.getElementById("browsegender").innerHTML = browseuserdata.data.gender;
+        document.getElementById("browsecity").innerHTML = browseuserdata.data.city;
+        document.getElementById("browsecountry").innerHTML = browseuserdata.data.country;
 
-        /* fill in that user's messages */
-
+        writeToWall(somearg);
     }
 
 }

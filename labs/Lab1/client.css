@@ -146,6 +146,11 @@ select {
     background-color: #ffff95;
 }
 
+.posttextarea {
+    width: 296px;
+    height: 150px;
+}
+
 .wallspacer {
     height: 25px;
     width: 100%;
@@ -156,12 +161,6 @@ select {
 
 #hometab {
 }
-
-#posttextarea {
-    width: 296px;
-    height: 150px;
-}
-
 
 
 /* PROFILE PAGE: BROWSE */
