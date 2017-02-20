@@ -2,14 +2,26 @@
  * endSession and continueSession functions?
  * Consider formmethod="get" and "post"
  * separate refresh buttons browse/home?
+ * global browseUser variables - YES
+ * addEventListeners -> setAttributes
  */
+var browsecontext = {
+    "email": undefined,
+    "firstname": undefined,
+    "familyname": undefined,
+    "gender": undefined,
+    "city": undefined,
+    "country": undefined
+};
+
+
 var displayView = function(){
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
     var localdataobject;
     var tokenresponse;
 
-    if (localtokenJSON === null) {
+    if( localtokenJSON === null ){
         // No token in localStorage
         displayWelcomeView();
     }
@@ -17,7 +29,7 @@ var displayView = function(){
         localtokenobject = JSON.parse(localtokenJSON);
         tokenresponse = serverstub.getUserDataByToken(localtokenobject.token);
 
-        if (tokenresponse.success){
+        if( tokenresponse.success ){
             // Token is valid, store and use local data
             localdataobject = tokenresponse.data;
             localStorage.setItem("localdata", JSON.stringify(localdataobject));
@@ -65,7 +77,7 @@ var displayProfileView = function(dataobject){
         countryholders[i].innerHTML=dataobject.country;
     }
 
-    updateClientWall();
+    updateWall();
 
     attachHandlers();
 
@@ -89,14 +101,16 @@ var attachHandlers = function() {
     var changepasswordform = document.getElementById("changepasswordform");
     var signoutbutton = document.getElementById("signoutbutton");
     var selfpostbutton = document.getElementById("selfpostbutton");
-    var clientwallrefreshbutton = document.getElementById("clientwallrefresh");
+    var selfwallrefreshbutton = document.getElementById("selfwallrefresh");
+    var browsepostbutton = document.getElementById("browsepostbutton");
+    var browsewallrefreshbutton = document.getElementById("browsewallrefresh");
     var fetchuserbutton = document.getElementById("browseuserbutton");
 
     if( loginbox != null ){
         /* attach loginformSubmit */
         var loginform = document.getElementById("loginform");
 
-        loginform.setAttribute("onsubmit", "loginformSubmit();return false" );
+        loginform.setAttribute("onsubmit", "loginformSubmit(); return false");
     }
 
     if( signupbox != null ){
@@ -138,9 +152,19 @@ var attachHandlers = function() {
         selfpostbutton.addEventListener("click", selfPostClick);
     }
 
-    if( clientwallrefreshbutton != null ){
-        /* attach updateClientWall */
-        clientwallrefreshbutton.addEventListener("click", updateClientWall);
+    if( selfwallrefreshbutton != null ){
+        /* attach (self) updateWall */
+        selfwallrefreshbutton.setAttribute("onclick", "updateWall()");
+    }
+
+    if( browsepostbutton != null ){
+        /* attach browsePostClick */
+        browsepostbutton.addEventListener("click", browsePostClick);
+    }
+
+    if( browsewallrefreshbutton != null ){
+        /* attach (self) updateWall */
+        browsewallrefreshbutton.setAttribute("onclick", "updateWall(browsecontext.email)");
     }
 
     if( fetchuserbutton != null ){
@@ -234,8 +258,8 @@ var switchTabByTabSelector = function() {
     }
     /* this.id == "<tabwewant>selector" */
     document.getElementById( this.id.substring( 0, this.id.search( "selector" ))).style.display = "block";
-    /* note the very polly nature of updateClientWall - to be changed? */
-    updateClientWall();
+    /* note the very polly nature of updateWall - to be changed? */
+    updateWall();
 
 };
 var tabselectorHighlight = function() {
@@ -256,7 +280,7 @@ var changepasswordformSubmit = function() {
         // No token in local storage
         alert("How?");
     }
-    else {
+    else{
         localtokenobject = JSON.parse(localtokenJSON);
         changepasswordresponse = serverstub.changePassword(
             localtokenobject.token,
@@ -306,38 +330,37 @@ var selfPostClick = function() {
     if( localtokenJSON != null
         && content != null
         && localdataJSON != null
-        && content != ""){
-        clientPostMessage(JSON.parse(localtokenJSON).token, content, JSON.parse(localdataJSON).email);
+        && content != "" ){
+        clientPostMessage(JSON.parse(localtokenJSON).token, content, JSON.parse(localdataJSON).email, true);
         document.getElementById("homeposttextarea").value = "";
     }
 
 };
-var clientPostMessage = function(token, content, toEmail) {
-    serverstub.postMessage(token, content, toEmail);
-    updateClientWall();
+var browsePostClick = function() {
+    var localtokenJSON = localStorage.getItem("localtoken");
+    var content = document.getElementById("browseposttextarea").value;
+    var email = browsecontext.email;
+
+    if( localtokenJSON != null
+        && content != null
+        && email != undefined
+        && content != "" ){
+        clientPostMessage(JSON.parse(localtokenJSON).token, content, email, false);
+        document.getElementById("browseposttextarea").value = "";
+    }
 
 };
-var updateClientWall = function() {
-    /* updateClientWall to eventually be a callback function? */
-    var localtokenJSON = localStorage.getItem("localtoken");
-    var clientmessages = serverstub.getUserMessagesByToken(JSON.parse(localtokenJSON).token);
-    var clientmessagesHTML = "";
-    var clientwallelement = document.getElementById("clientwall");
+var clientPostMessage = function(token, content, toEmail, self) {
+    serverstub.postMessage(token, content, toEmail);
 
-    if( clientmessages.success
-        && clientwallelement != null ){
-        for( i = 0; i < clientmessages.data.length; ++i ){
-            clientmessagesHTML = clientmessagesHTML + "<p>" + clientmessages.data[i].writer + " wrote:</p>"
-            + "<p>" + clientmessages.data[i].content + "</p><hr />";
-        }
-        clientwallelement.innerHTML = clientmessagesHTML;
+    if( self ){
+        updateWall();
     }
     else{
-        /* endSession */
+        updateWall(toEmail);
     }
 
 };
-
 var browseUserClick = function () {
     var localtokenJSON = localStorage.getItem("localtoken");
     var email = document.getElementById("browseuserinput").value;
@@ -351,7 +374,6 @@ var browseUserClick = function () {
         && browseusermessages.success ){
         /* fill in the template and make it visible */
         document.getElementById("userpagetemplate").style.display = "block";
-
         document.getElementById("browsefirstname").innerHTML = browseuserdata.data.firstname;
         document.getElementById("browsefamilyname").innerHTML = browseuserdata.data.familyname;
         document.getElementById("browseemail").innerHTML = browseuserdata.data.email;
@@ -359,7 +381,47 @@ var browseUserClick = function () {
         document.getElementById("browsecity").innerHTML = browseuserdata.data.city;
         document.getElementById("browsecountry").innerHTML = browseuserdata.data.country;
 
-        writeToWall(somearg);
+        /* fill browsecontext fam */
+        browsecontext.firstname = browseuserdata.data.firstname;
+        browsecontext.familyname = browseuserdata.data.familyname;
+        browsecontext.email = browseuserdata.data.email;
+        browsecontext.gender = browseuserdata.data.gender;
+        browsecontext.city = browseuserdata.data.city;
+        browsecontext.country = browseuserdata.data.country;
+
+        updateWall(email);
     }
 
-}
+};
+var updateWall = function(email) {
+    /* updateWall to eventually be a callback function? */
+    var messages;
+    var messagesHTML = "";
+    var wallelement;
+    var localtokenJSON = localStorage.getItem("localtoken");
+
+    /* acquire target */
+    if( email === undefined ){
+        messages = serverstub.getUserMessagesByToken(JSON.parse(localtokenJSON).token);
+        wallelement = document.getElementById("selfwall");
+    }
+    else{
+        messages = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
+        wallelement = document.getElementById("browsewall");
+    }
+
+    /* build the wall */
+    if( messages.success
+        && wallelement != null ){
+        for( i = 0; i < messages.data.length; ++i ){
+            messagesHTML = messagesHTML + "<p>" + messages.data[i].writer + " wrote:</p>"
+            + "<p>" + messages.data[i].content + "</p><hr />";
+        }
+        wallelement.innerHTML = messagesHTML;
+    }
+    else{
+        /* couldn't get messages or wallelement - something wrong - endSession? */
+        alert("uh oh spaghettio");
+    }
+
+};
