@@ -12,7 +12,6 @@ textarea {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100px;
-    background-color: mistyrose;
 }
 
 #welcomecontainer {
@@ -25,7 +24,19 @@ textarea {
 
     width: 340px;
     height: 400px;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
+}
+
+#leftpanelborder {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    width: 336px;
+    height: 396px;
+
+    border-style: solid;
+    border-width: 2px;
 }
 
 .rightpanel {
@@ -34,7 +45,7 @@ textarea {
 
     width: 250px;
     height: 400px;
-    background-color: beige;
+    /* background-color: beige; */
 }
 
 #loginbox {
@@ -43,8 +54,11 @@ textarea {
     left: 0px;
     right: 0px;
 
-    height: 90px;
+    height: 86px;
     background-color: lightpink;
+
+    border-style: solid;
+    border-width: 2px;
 }
 
 #signupbox {
@@ -53,8 +67,11 @@ textarea {
     left: 0px;
     right: 0px;
 
-    height: 300px;
+    height: 296px;
     background-color: darksalmon;
+
+    border-style: solid;
+    border-width: 2px;
 }
 
 #signupheader {
@@ -64,7 +81,7 @@ textarea {
     height: 40px;
     line-height: 40px;
     text-align: center;
-    background-color: aliceblue;
+    /* background-color: aliceblue; */
 }
 
 .row {
@@ -80,7 +97,7 @@ textarea {
     height: 26px;
     line-height: 26px;
     font-family: arial;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
 }
 
@@ -110,6 +127,7 @@ select {
 #profilecontainer {
     width: 800px;
     height: 400px;
+    background-color: mistyrose;
 }
 
 .tabselector {

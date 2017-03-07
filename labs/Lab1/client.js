@@ -1,9 +1,8 @@
 /**
  * endSession and continueSession functions?
  * Consider formmethod="get" and "post"
- * make localdata global script variable as well instead of localStorage?
- * addEventListeners -> setAttributes
- * change password should utilize the repeatbox
+ * make localdata a global script variable as well instead of localStorage?
+ * addEventListeners -> setAttributes?
  */
 var browsecontext = {
     "email": undefined,
@@ -87,7 +86,7 @@ window.onload = function(){
     //You shall put your own custom code here.
     //window.alert() is not allowed to be used in your implementation.
     init();
-    alert("page reloaded");
+    //alert("page reloaded");
 
 };
 var init = function() {
@@ -140,6 +139,13 @@ var attachHandlers = function() {
     if( changepasswordform != null ){
         /* attach changepasswordformSubmit */
         changepasswordform.setAttribute("onsubmit","changepasswordformSubmit(); return false");
+
+        /* attach changepwPasswordHelper */
+        var newpwinputelement = document.getElementById("newpasswordinput");
+        var rptnewpwinputelement = document.getElementById("repeatnewpasswordinput");
+
+        newpwinputelement.addEventListener("input", changepwPasswordHelper);
+        rptnewpwinputelement.addEventListener("input", changepwPasswordHelper);
     }
 
     if( signoutbutton != null ){
@@ -179,8 +185,7 @@ var signupPasswordHelper = function() {
     var SUETBelement = document.getElementById("signuperrortextbox");
 
     if( password === "" ){
-        /* clear text in error text box */
-        SUETBelement.innerHTML="";
+        SUETBelement.innerHTML = "";
     }
     else if( password.length < 4 ){
         SUETBelement.style.color="red";
@@ -225,7 +230,7 @@ var loginformSubmit = function() {
             displayProfileView(localdataobject);
         }
         else{
-            alert("! This token is so 2016 !. Server message: " + tokenresponse.message);
+            //alert("! This token is so 2016 !. Server message: " + tokenresponse.message);
         }
     }
     else{
@@ -234,11 +239,15 @@ var loginformSubmit = function() {
 
 };
 var signupformSubmit = function() {
+    var newsignee;
+    var signupresponse;
+    var SUETBelement = document.getElementById("signuperrortextbox");
+
     if( ! signupPasswordHelper() ){
         return;
     }
 
-    var newSignee = {"email":       document.getElementById("emailinput").value,
+    newsignee = {"email":       document.getElementById("emailinput").value,
                 "firstname":    document.getElementById("firstnameinput").value,
                 "familyname":   document.getElementById("familynameinput").value,
                 "gender":       document.getElementById("genderinput").value,
@@ -246,8 +255,17 @@ var signupformSubmit = function() {
                 "country":      document.getElementById("countryinput").value,
                 "password":     document.getElementById("passwordinput").value
     };
-    alert("about to sign up on server");
-    serverstub.signUp(newSignee);
+
+    signupresponse = serverstub.signUp(newsignee);
+
+    if( signupresponse.success ){
+        SUETBelement.style.color="green";
+        document.getElementById("signupform").reset();
+    }
+    else{
+        SUETBelement.style.color="red";
+    }
+    SUETBelement.innerHTML=signupresponse.message;
 
 };
 var switchTabByTabSelector = function() {
@@ -270,15 +288,49 @@ var tabselectorNormalize = function(){
     document.getElementById(this.id).style.backgroundColor = "#fff0f5";
 
 };
+var changepwPasswordHelper = function() {
+    var newpassword = document.getElementById("newpasswordinput").value;
+    var repeatnewpassword = document.getElementById("repeatnewpasswordinput").value;
+    var CPWETBelement = document.getElementById("changepassworderrortextbox");
+
+    if( newpassword === "" ){
+        CPWETBelement.innerHTML="";
+    }
+    else if( newpassword.length < 4 ){
+        CPWETBelement.style.color="red";
+        CPWETBelement.innerHTML="New password too short";
+    }
+    else if( newpassword === repeatnewpassword ){
+        CPWETBelement.style.color="green";
+
+        if( newpassword === "password"){
+            CPWETBelement.innerHTML="I deserve this";
+        }
+        else{
+            CPWETBelement.innerHTML="New password OK";
+            return true;
+        }
+    }
+    else{
+        CPWETBelement.style.color = "red";
+        CPWETBelement.innerHTML = "New passwords do not match";
+    }
+    return false;
+
+};
 var changepasswordformSubmit = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
     var CPWETBelement = document.getElementById("changepassworderrortextbox");
     var changepasswordresponse;
 
+    if( ! changepwPasswordHelper() ){
+        return;
+    }
+
     if( localtokenJSON === null ){
         // No token in local storage
-        alert("How?");
+        //alert("How?");
     }
     else{
         localtokenobject = JSON.parse(localtokenJSON);
@@ -291,6 +343,7 @@ var changepasswordformSubmit = function() {
         CPWETBelement.innerHTML = changepasswordresponse.message;
         if( changepasswordresponse.success ){
             CPWETBelement.style.color = "green";
+            document.getElementById("changepasswordform").reset();
         }
         else{
             CPWETBelement.style.color = "red";
@@ -302,10 +355,11 @@ var logOutClick = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
     var signoutresponse;
+    var SOETBelement = document.getElementById("signouterrortextbox");
 
     if( localtokenJSON === null ){
         // No token in local storage
-        alert("How?");
+        //alert("How?");
     }
     else{
         localtokenobject = JSON.parse(localtokenJSON);
@@ -317,7 +371,8 @@ var logOutClick = function() {
             displayWelcomeView();
         }
         else{
-            alert(signoutresponse.message);
+            //Something went wrong, pretend everything is alright
+            SOETBelement.innerHTML=signoutresponse.message;
         }
     }
 
@@ -418,7 +473,7 @@ var updateWall = function(email) {
     }
     else{
         /* couldn't get messages or wallelement - something wrong - endSession? */
-        alert("uh oh spaghettio");
+        //alert("uh oh spaghettio");
     }
 
 };

@@ -142,7 +142,6 @@ var serverstub = (function() {
             'messages': []
           };
             users[inputObject.email] = user;
-            alert("storing this shit in local");
             persistUsers();
             return {"success": true, "message": "Successfully created a new user."};
         } else {
