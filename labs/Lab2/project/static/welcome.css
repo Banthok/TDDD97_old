@@ -1,0 +1,78 @@
+body {
+    font: 13px verdana;
+    background-color: aquamarine;
+}
+
+.container {
+    position: relative; /* Children inherits position from this element and not window itself */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: 400px;
+    background-color: mistyrose;
+}
+
+.leftpanel {
+    position: absolute;
+
+    width: 340px;
+    height: 400px;
+    background-color: aquamarine;
+}
+
+.rightpanel {
+    position: absolute;
+    right: 0px;
+
+    width: 250px;
+    height: 400px;
+    background-color: beige;
+}
+
+#loginbox {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 90px;
+    background-color: lightpink;
+}
+
+#signupbox {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 300px;
+    background-color: darksalmon;
+}
+
+#signupheader {
+    font-family: fantasy;
+    font-size: 14px;
+    font-weight: bolder;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: aliceblue;
+}
+
+.row {
+    margin-top: 2px;
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+}
+
+input {
+    float: right;
+    font-size: 11px;
+    width: 60%;
+}
+
+select {
+    float: right;
+}

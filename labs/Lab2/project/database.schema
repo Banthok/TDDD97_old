@@ -1,0 +1,26 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS messages;
+
+CREATE TABLE users (
+  email TEXT PRIMARY KEY ,
+  password TEXT NOT NULL,
+  firstname TEXT,
+  lastname TEXT,
+  gender TEXT,
+  city TEXT,
+  country TEXT
+);
+
+
+CREATE TABLE messages (
+  id integer PRIMARY KEY ,
+  content TEXT NOT NULL ,
+  toUser INTEGER NOT NULL ,
+  fromUser INTEGER NOT NULL ,
+  FOREIGN KEY(toUser) REFERENCES users(id),
+  FOREIGN KEY(fromUser) REFERENCES users(id)
+);
+
+INSERT INTO USERS(email, password, firstname, lastname, gender, city,
+country) VALUES ('ms@a.a', '1234', 'martin', 'shkreli', 'Male',
+'Chiraq', 'Israel');
