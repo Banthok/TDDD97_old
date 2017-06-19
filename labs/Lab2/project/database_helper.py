@@ -37,7 +37,7 @@ def temp():
 
 
 def get_all_users():
-    users = query_db('select email, firstname, lastname, gender, city, country from users')
+    users = query_db('select email, firstname, familyname, gender, city, country from users')
     return users
 
 
@@ -47,7 +47,7 @@ def get_all_messages():
 
 
 def get_user_data(email):
-    user_data = query_db('select email, firstname, lastname, gender, city, country from users where email=? ',
+    user_data = query_db('select email, firstname, familyname, gender, city, country from users where email=? ',
                          [email])
     return user_data[0]
 
@@ -65,9 +65,9 @@ def update_password(email, password):
     return response
 
 
-def add_user(email, password, firstname, lastname, gender, city, country):
+def add_user(email, password, firstname, familyname, gender, city, country):
     query_db('insert into users values (?, ?, ?, ?, ?, ?, ?)',
-             [email, password, firstname, lastname, gender, city, country])
+             [email, password, firstname, familyname, gender, city, country])
     get_db().commit()
 
 

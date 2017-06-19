@@ -35,10 +35,10 @@ def change_password():
 def get_user_data_by_token(token):
     email = logged_in_users.get(token)
     if email is None:
-        return jsonify({"success": False, "message": "Token doesn't exists."})
+        return jsonify({"success": False, "message": "No such token."})
     else:
         data = database_helper.get_user_data(email)
-        return jsonify({"success": True, "message": "Token exists.", "data": data})
+        return jsonify({"success": True, "message": "Ok!", "data": data})
 
 
 @app.route('/get-user-data-by-email/<token>/<email>', methods=['GET'])

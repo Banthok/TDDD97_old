@@ -36,20 +36,16 @@ var displayView = function(){
     else{
 
 	get("/get-user-data-by-token/" + JSON.parse(localtokenJSON), function(response){
-	    
-            if( response.success ){
 
-		// Token is valid, store and use local data
-		localdata = JSON.stringify(response.data);
+	    if(response.success){
+		localdata = JSON.stringify(response.data); 
+
 		displayProfileView(localdata);
-            }
-            else{
-		// Token is invalid, clear local dataq
-		
-		localStorage.removeItem("localtoken");
-		localStorage.removeItem("localdata");
+	    }
+	    else{
 		displayWelcomeView();
-            }
+		localStorage.removeItem("localtoken"); 
+	    }
 	}); 
     }
 
@@ -224,7 +220,7 @@ var signupPasswordHelper = function() {
     return false;
 
 };
-var loginformSubmit = function() {
+var loginformSubmit = function() { //signing in does not make tabs clickable. 
     var loginemail = document.getElementById("loginemailinput").value;
     var loginpassword = document.getElementById("loginpasswordinput").value;
     var localtokenobject;
@@ -236,14 +232,22 @@ var loginformSubmit = function() {
 
     post("/sign-in", postData, function(response){
 	if(response.success){
-	    localtokenobject = response.data;
-	    localStorage.setItem("localtoken", JSON.stringify(localtokenobject));
-	    localdataobject = response.data;
-	    displayProfileView(localdataobject);
+	    localStorage.setItem("localtoken", JSON.stringify(response.data));
+
+
+
+	    get("/get-user-data-by-token/" + response.data, function(response2){
+		if(response2.success){
+
+		    localdata = JSON.stringify(response2.data);
+		    displayProfileView(JSON.stringify(response2.data));
+		}
+	    }); 
+
 
 	}
 	else{
-	    document.getElementById("loginerrortextbox").innerHTML = loginstatus.message;
+	    document.getElementById("loginerrortextbox").innerHTML = response.message;
 	}
     });
 
@@ -258,13 +262,13 @@ var signupformSubmit = function() {
     }
 
     newsignee = {"email":       document.getElementById("emailinput").value,
-                "firstname":    document.getElementById("firstnameinput").value,
-                "familyname":   document.getElementById("familynameinput").value,
-                "gender":       document.getElementById("genderinput").value,
-                "city":         document.getElementById("cityinput").value,
-                "country":      document.getElementById("countryinput").value,
-                "password":     document.getElementById("passwordinput").value
-    };
+                 "firstname":    document.getElementById("firstnameinput").value,
+                 "familyname":   document.getElementById("familynameinput").value,
+                 "gender":       document.getElementById("genderinput").value,
+                 "city":         document.getElementById("cityinput").value,
+                 "country":      document.getElementById("countryinput").value,
+                 "password":     document.getElementById("passwordinput").value
+		};
 
     //signupresponse = serverstub.signUp(newsignee);
 
@@ -278,10 +282,10 @@ var signupformSubmit = function() {
 
     post("/sign-up", postData, function(response){
 
-    if( response.success ){
-        SUETBelement.style.color="green";
-        document.getElementById("signupform").reset();
-    }
+	if( response.success ){
+            SUETBelement.style.color="green";
+            document.getElementById("signupform").reset();
+	}
 	else{
             SUETBelement.style.color="red";
 	}
@@ -355,32 +359,36 @@ var changepasswordformSubmit = function() {
     }
     else{
         localtokenobject = JSON.parse(localtokenJSON);
-        changepasswordresponse = serverstub.changePassword(
-            localtokenobject.token,
-            document.getElementById("oldpasswordinput").value,
-            document.getElementById("newpasswordinput").value
-        );
+	// changepasswordresponse =
+	// serverstub.changePassword(localtokenobject.token,
+	// ,document.getElementById("newpasswordinput").value);
 
-        CPWETBelement.innerHTML = changepasswordresponse.message;
-        if( changepasswordresponse.success ){
-            CPWETBelement.style.color = "green";
-            document.getElementById("changepasswordform").reset();
-        }
-        else{
-            CPWETBelement.style.color = "red";
-        }
+	post("/change-password", "token="+JSON.parse(localtokenJSON) 
+	     + "&old_password=" + document.getElementById("oldpasswordinput").value
+	     + "&new_password=" + document.getElementById("newpasswordinput").value, function(response){
+		 CPWETBelement.innerHTML = response.message;
+		 if( response.success ){
+		     CPWETBelement.style.color = "green";
+		     document.getElementById("changepasswordform").reset();
+		 }
+		 else{
+		     CPWETBelement.style.color = "red";
+		 }
+	     }); 
+
+
     }
 
 };
 var logOutClick = function() {
     var localtokenJSON = localStorage.getItem("localtoken");
-   
-   
+    
+    
     var SOETBelement = document.getElementById("signouterrortextbox");
 
     if( localtokenJSON === null ){
         // No token in local storage
-        //alert("How?");
+
     }
     else{
         post("/sign-out", "token="+JSON.parse(localtokenJSON), function(response){
@@ -437,15 +445,16 @@ var browseUserClick = function () {
     var localtokenJSON = localStorage.getItem("localtoken");
     var email = document.getElementById("browseuserinput").value;
     //    var browseuserdata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token, email);
+if(email != ""){
     get("/get-user-data-by-email/" + JSON.parse(localtokenJSON) + "/" +
-	JSON.parse(localdata).email, function(response)
+	email, function(response)
 	{
 	    
 	    if(response.success){
 		/* fill in the template and make it visible */
 		document.getElementById("userpagetemplate").style.display = "block";
 		document.getElementById("browsefirstname").innerHTML = response.data.firstname;
-		document.getElementById("browsefamilyname").innerHTML = response.data.lastname;
+		document.getElementById("browsefamilyname").innerHTML = response.data.familyname;
 		document.getElementById("browseemail").innerHTML = response.data.email;
 		document.getElementById("browsegender").innerHTML = response.data.gender;
 		document.getElementById("browsecity").innerHTML = response.data.city;
@@ -453,7 +462,7 @@ var browseUserClick = function () {
 
 		/* fill browsecontext fam */
 		browsecontext.firstname = response.data.firstname;
-		browsecontext.familyname = response.data.lastname;
+		browsecontext.familyname = response.data.familyname;
 		browsecontext.email = response.data.email;
 		browsecontext.gender = response.data.gender;
 		browsecontext.city = response.data.city;
@@ -461,7 +470,11 @@ var browseUserClick = function () {
 
 		updateWall(email);
 	    }
+	    else{
+		//output some form of error
+	    }
 	}); 
+}
     //   var browseusermessages = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
 
 
@@ -479,7 +492,7 @@ var updateWall = function(email) {
 	//konstigt. post för andra människor hamnar på min wall.
     {
 	get("/get-user-messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
-	    + JSON.parse(email), function(response){
+	    + email, function(response){
 		if(response.success){
 		    messages=response.data; 
 		    for( i = 0; i < messages.length; ++i ){

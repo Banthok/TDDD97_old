@@ -5,7 +5,7 @@ CREATE TABLE users (
   email TEXT PRIMARY KEY ,
   password TEXT NOT NULL,
   firstname TEXT,
-  lastname TEXT,
+  familyname TEXT,
   gender TEXT,
   city TEXT,
   country TEXT
@@ -21,6 +21,9 @@ CREATE TABLE messages (
   FOREIGN KEY(fromUser) REFERENCES users(id)
 );
 
-INSERT INTO USERS(email, password, firstname, lastname, gender, city,
+INSERT INTO USERS(email, password, firstname, familyname, gender, city,
 country) VALUES ('ms@a.a', '1234', 'martin', 'shkreli', 'Male',
 'Chiraq', 'Israel');
+INSERT INTO USERS(email, password, firstname, familyname, gender, city,
+country) VALUES ('my@a.a', '1234', 'milo', 'yiannopolous', 'Male',
+'Chitown', 'East Greece');
