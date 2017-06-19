@@ -1,0 +1,42 @@
+1.  What security risks can storing passwords in plain text cause?
+How can this problem be addressed programmatically?
+
+ They amplify the damage of SQL injections since it can yield plain
+ text passwords rather than hashed passwords. Hashing and salting the
+ passwords is recommended.
+
+
+
+2.  As http requests and responses are text-based information, they
+can be easily intercepted and read by a third-party on the Internet.
+Please explain how this problem has been solved in real-world
+scenarios.
+
+ By end to end encryption. 
+
+
+
+3.  How can we use Flask for implementing multi-page web applications?
+Please explain how Flask templates can help us on the way?
+
+ By returning different html segments on different routes, a multi
+ page web application can be made. By substituting the routename
+ through a template, templates can make sure you don't have to write
+ similar html code multiple times.
+
+
+4.  Please describe a Database Management System. How SQLite is
+different from other DBMSs?
+
+ A DBMS is the interface as to which the user or an application
+ communicates with the database. SQLite stores it's database as a
+ single file on the disk so it's only accessible on that machine.
+
+
+
+5.  Do you think the Telnet client is a good tool for testing
+server-side procedures?  What are its possible shortages
+
+ Yes because you can send whatever http requests you'd like despite
+ what the server expects. However managing tokens and whatnot was
+ clunky because our server was expecting a the behaviour of web browser.
