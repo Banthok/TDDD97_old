@@ -35,7 +35,7 @@ var displayView = function(){
     }
     else{
 
-	get("/get-user-data-by-token/" + JSON.parse(localtokenJSON), function(response){
+	get("/data-by-token/" + JSON.parse(localtokenJSON), function(response){
 
 	    if(response.success){
 		localdata = JSON.stringify(response.data); 
@@ -236,7 +236,7 @@ var loginformSubmit = function() { //signing in does not make tabs clickable.
 
 
 
-	    get("/get-user-data-by-token/" + response.data, function(response2){
+	    get("/data-by-token/" + response.data, function(response2){
 		if(response2.success){
 
 		    localdata = JSON.stringify(response2.data);
@@ -359,9 +359,6 @@ var changepasswordformSubmit = function() {
     }
     else{
         localtokenobject = JSON.parse(localtokenJSON);
-	// changepasswordresponse =
-	// serverstub.changePassword(localtokenobject.token,
-	// ,document.getElementById("newpasswordinput").value);
 
 	post("/change-password", "token="+JSON.parse(localtokenJSON) 
 	     + "&old_password=" + document.getElementById("oldpasswordinput").value
@@ -446,7 +443,7 @@ var browseUserClick = function () {
     var email = document.getElementById("browseuserinput").value;
     //    var browseuserdata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token, email);
 if(email != ""){
-    get("/get-user-data-by-email/" + JSON.parse(localtokenJSON) + "/" +
+    get("/data-by-email/" + JSON.parse(localtokenJSON) + "/" +
 	email, function(response)
 	{
 	    
@@ -491,7 +488,7 @@ var updateWall = function(email) {
 	//todo: denna funkar inte för icke-jag. jag tror anropet är
 	//konstigt. post för andra människor hamnar på min wall.
     {
-	get("/get-user-messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
+	get("/messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
 	    + email, function(response){
 		if(response.success){
 		    messages=response.data; 
@@ -505,7 +502,7 @@ var updateWall = function(email) {
 	    });
     }
     else{	
-	get("/get-user-messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
+	get("/messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
 	    + JSON.parse(localdata).email, function(response){
 		if(response.success){
 		    messages=response.data; 
