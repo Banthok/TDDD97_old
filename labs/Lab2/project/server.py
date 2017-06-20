@@ -19,13 +19,13 @@ def start():
 def sign_in():
     email = request.form['username']
     password = request.form['password']
-    is_valid = database_helper.is_valid_login(email, password)
-    if is_valid:
-        token = str(uuid.uuid4())
-        logged_in_users[token] = email
-        return jsonify({"success": True, "message": "Successfully signed in.", "data": token})
-    else:
+    valid = database_helper.is_valid_login(email, password)
+    if not valid:
         return jsonify({"success": False, "message": "Wrong username or password."})
+
+    token = str(uuid.uuid4())
+    logged_in_users[token] = email
+    return jsonify({"success": True, "message": "Successfully signed in.", "data": token})
 
 @app.route('/sign-up', methods=['POST'])
 def add_user():

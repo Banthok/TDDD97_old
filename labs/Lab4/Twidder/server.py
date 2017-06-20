@@ -2,16 +2,20 @@ from gevent.pywsgi import WSGIServer
 from werkzeug.serving import run_with_reloader
 from geventwebsocket.handler import WebSocketHandler
 from geventwebsocket import WebSocketServer, WebSocketError
-import uuid
+import hashlib, uuid
 import sqlite3
 import database_helper
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, jsonify
+from flask_bcrypt import Bcrypt
 import json
+import string, random
+import re
 #from Twidder import app
 
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 current_sockets = {};
 logged_in_users = {}
@@ -27,28 +31,33 @@ def start():
 def sign_in():
     email = request.form['username']
     password = request.form['password']
-    valid = database_helper.is_valid_login(email, password)
-    if not valid:
-        return jsonify({"success": False, "message": "Wrong username or password."})
+    try:
+        hashword = database_helper.get_user_password(email)
+        if bcrypt.check_password_hash(hashword['password'], password + hashword['salt']):
+            token = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(30));
+            logged_in_users[token] = email
+            return jsonify({"success": True, "message": "Successfully signed in.", "data": token})
+    except IndexError:
+        return jsonify({"success": False, "message": "Incorrect username or password."})
+    return jsonify({"success": False, "message": "Incorrect username or password."})
 
-    token = str(uuid.uuid4())
-    logged_in_users[token] = email
-    return jsonify({"success": True, "message": "Successfully signed in.", "data": token})
+
 
 @app.route('/sign-up', methods=['POST'])
 def add_user():
     email = request.form['email']
     password = request.form['password']
+    salt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8));
     firstname = request.form['firstname']
     familyname = request.form['familyname']
     gender = request.form['gender']
     city = request.form['city']
     country = request.form['country']
     try:
-        database_helper.add_user(email, password, firstname, familyname, gender, city, country)
+        database_helper.add_user(email, bcrypt.generate_password_hash(password + salt), salt, firstname, familyname, gender, city, country)
         return jsonify({"success": True, "message": "User successfully created."})
     except sqlite3.Error:
-        return jsonify({"success": False, "message": "Email taken."})
+        return jsonify({"success": False, "message": "Email already in use."})
 
 @app.route('/sign-out', methods=['POST'])
 def sign_out():
@@ -65,15 +74,19 @@ def change_password():
     token = request.form['token']
     new_password = request.form['new_password']
     old_password = request.form['old_password']
+
+
     if token not in logged_in_users:
         return jsonify({"success": False, "message": "You must be logged in to change password."})
     else:
         email = logged_in_users[token]
-        is_valid = database_helper.is_valid_login(email, old_password)
-        if not is_valid:
+        cred = database_helper.get_user_password(email)
+        hashed = cred['password']
+        salt = cred['salt']
+        if not bcrypt.check_password_hash(hashed, old_password + salt):
             return jsonify({"success": False, "message": "Incorrect password."})
         else:
-            database_helper.update_password(email, new_password)
+            database_helper.update_password(email, bcrypt.generate_password_hash(new_password + salt))
             return jsonify({"success": True, "message": "Password changed!"})
 
 

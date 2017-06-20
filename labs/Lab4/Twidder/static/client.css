@@ -1,0 +1,203 @@
+body {
+    font: 13px verdana;
+    background-color: cadetblue;
+}
+
+textarea {
+    resize: none;
+}
+
+.container {
+    position: relative; /* Children inherits position from this element and not window itself */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+#welcomecontainer {
+    width: 600px;
+    height: 400px;
+}
+
+.leftpanel {
+    position: absolute;
+
+    width: 340px;
+    height: 400px;
+    /* background-color: aquamarine; */
+}
+
+#leftpanelborder {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    width: 336px;
+    height: 396px;
+
+    border-style: solid;
+    border-width: 2px;
+}
+
+.rightpanel {
+    position: absolute;
+    right: 0px;
+
+    width: 250px;
+    height: 400px;
+    /* background-color: beige; */
+}
+
+#loginbox {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 86px;
+    background-color: darkkhaki;
+
+    border-style: solid;
+    border-width: 2px;
+}
+
+#signupbox {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 296px;
+    background-color: darkkhaki;
+
+    border-style: solid;
+    border-width: 2px;
+}
+
+#signupheader {
+    font-family: arial;
+    font-size: 14px;
+    font-weight: bolder;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    /* background-color: aliceblue; */
+}
+
+.row {
+    margin-top: 2px;
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+}
+
+.errortextbox {
+    float: left;
+    margin-top: 2px;
+    height: 26px;
+    line-height: 26px;
+    font-family: arial;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#loginsubmit {
+    width: 25%;
+    height: 26px;
+}
+
+#signupsubmit {
+    width: 25%;
+    height: 26px;
+}
+
+input {
+    float: right;
+    font-size: 11px;
+    height: 16px;
+    width: 60%;
+}
+
+select {
+    float: right;
+}
+
+/* PROFILE PAGE STYLES */
+
+#profilecontainer {
+    width: 800px;
+    height: 400px;
+    background-color: darkkhaki;
+}
+
+.tabselector {
+    position: relative;
+    float: left;
+
+    height: 25px;
+    width: 80px;
+    margin-right: 10px;
+    line-height: 25px;
+    text-align: center;
+    background-color: #fff0f5;
+}
+
+.tab {
+    clear: both;
+}
+
+.profileleftpanel {
+    position: absolute;
+    left: 0px;
+    width: 300px;
+}
+
+.profilerightpanel {
+    position: absolute;
+    right: 0px;
+    width: 300px;
+}
+
+.profilebottompanel {
+    position: relative;
+    top: 400px;
+    background-color: #ffff95;
+}
+
+.posttextarea {
+    width: 296px;
+    height: 150px;
+}
+
+.wallspacer {
+    height: 25px;
+    width: 100%;
+    background-color: cadetblue; 
+}
+
+/* PROFILE PAGE: HOME */
+
+#hometab {
+}
+
+
+/* PROFILE PAGE: BROWSE */
+
+#browsetab {
+    display: none;
+}
+
+#userpagetemplate {
+    display: none;
+}
+
+/* PROFILE PAGE: ACCOUNT */
+
+#accounttab {
+    display: none;
+}
+
+#changepasswordsubmit {
+    width: 25%;
+    height: 26px;
+}
