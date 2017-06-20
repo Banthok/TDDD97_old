@@ -3,23 +3,12 @@ from flask import g, jsonify
 from server import app
 
 
-def connect_to_database():
-    return sqlite3.connect('database.db')
-
-
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = connect_to_database()
+        db = g._database = sqlite3.connect('database.db')
     return db
 
-
-def init_db():
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('database.schema', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
 
 def query_db(query, args=(), one=False):
@@ -29,21 +18,6 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-
-def temp():
-    response = query_db('delete from users where email = "email@email.email"')
-    get_db().commit()
-    return response
-
-
-def get_all_users():
-    users = query_db('select email, firstname, familyname, gender, city, country from users')
-    return users
-
-
-def get_all_messages():
-    messages = query_db('select content, fromUser, toUser  from messages')
-    return messages
 
 
 def get_user_data(email):

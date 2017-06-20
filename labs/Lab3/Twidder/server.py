@@ -7,7 +7,7 @@ import sqlite3
 import database_helper
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, jsonify
-
+import json
 #from Twidder import app
 
 
@@ -147,26 +147,6 @@ def show_logged_in_users():
     return str(logged_in_users)
 
 
-@app.route('/temp', methods=['GET'])
-def temp():
-    database_helper.temp()
-    try:
-        database_helper.add_user("email@email.email", "x", "x", "x", "x", "x", "x")
-        return "success!"
-    except sqlite3.Error:
-        return "error!"
-
-
-@app.route('/users', methods=['GET'])
-def show_users():
-    return jsonify({"data": database_helper.get_all_users()})
-
-
-@app.route('/messages', methods=['GET'])
-def show_messages():
-    return jsonify({"data": database_helper.get_all_messages()})
-
-
 @app.route('/connect-socket')
 def socket_connect():
     if request.environ.get("wsgi.websocket"):
@@ -175,21 +155,17 @@ def socket_connect():
             try:
                 cur_email = ws.receive()
                 if cur_email in current_sockets:
-                    current_sockets[cur_email].send("logout")
+                    current_sockets[cur_email].send(json.dumps("logout"))
                 current_sockets[cur_email] = ws
 
             except WebSocketError as e:
-                print(str(e))
+                print("WebSocketError: " + str(e))
+                break
 
 
-
-#def run_server():
-     
-#@run_with_reloader 
-if __name__ == "__main__":
-    #run_server()
+if __name__ == '__main__':
     app.debug = True
-    http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
-    http_server.serve_forever()   
-    app.run()
+    server = WebSocketServer(("", 5000), app, handler_class=WebSocketHandler)
+    server.serve_forever()
+
 

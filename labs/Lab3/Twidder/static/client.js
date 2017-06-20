@@ -1,10 +1,9 @@
 /**
  * endSession and continueSession functions?
  * Consider formmethod="get" and "post"
- * make localdata a global script variable as well instead of localStorage?
  * addEventListeners -> setAttributes?
  */
-var browsecontext = {
+var browsecontext = { //user looked at while using browsetab
     "email": undefined,
     "firstname": undefined,
     "familyname": undefined,
@@ -13,7 +12,7 @@ var browsecontext = {
     "country": undefined
 };
 
-var localdata = {
+var localdata = { //the logged in user
     "email": undefined,
     "firstname": undefined,
     "familyname": undefined,
@@ -21,9 +20,9 @@ var localdata = {
     "city": undefined,
     "country": undefined
 };
-/* get away with with no value? no! browsecontext === undefined, while browsecontext.email -> exception */
 
-var displayView = function(){
+var displayView = function()
+{
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
     var localdataobject;
@@ -48,14 +47,16 @@ var displayView = function(){
 	    }
 	}); 
     }
-
 };
-var displayWelcomeView = function(){
+
+var displayWelcomeView = function()
+{
     document.getElementById("viewdiv").innerHTML=document.getElementById("welcomeview").innerHTML;
     attachHandlers();
-
 };
-var displayProfileView = function(dataobject){
+
+var displayProfileView = function(dataobject)
+{
     if (typeof dataobject !== 'undefined'){
 	document.getElementById("viewdiv").innerHTML=document.getElementById("profileview").innerHTML;
 
@@ -86,25 +87,24 @@ var displayProfileView = function(dataobject){
 
     }
     updateWall();
-
     attachHandlers();
-
 };
-window.onload = function(){
+
+window.onload = function()
+{
     //code that is executed as the page is loaded.
     //You shall put your own custom code here.
     //window.alert() is not allowed to be used in your implementation.
     init();
-
-
 };
 
-var init = function() {
+var init = function()
+{
     displayView();
-
 };
 
-var attachHandlers = function() {
+var attachHandlers = function() 
+{
     var signupbox = document.getElementById("signupbox");
     var loginbox = document.getElementById("loginbox");
     var tabselectors = document.getElementsByClassName("tabselector");
@@ -116,14 +116,15 @@ var attachHandlers = function() {
     var browsewallrefreshbutton = document.getElementById("browsewallrefresh");
     var fetchuserbutton = document.getElementById("browseuserbutton");
 
-    if( loginbox != null ){
+    if( loginbox != null )
+    {
         /* attach loginformSubmit */
         var loginform = document.getElementById("loginform");
-
         loginform.setAttribute("onsubmit", "loginformSubmit(); return false");
     }
 
-    if( signupbox != null ){
+    if( signupbox != null )
+    {
         /* attach signupPasswordHelper */
         var pwinputelement = document.getElementById("passwordinput");
         var rptpwinputelement = document.getElementById("repeatpasswordinput");
@@ -133,13 +134,14 @@ var attachHandlers = function() {
 
        /*  attach signupformSubmit */
         var signupform = document.getElementById("signupform");
-
         signupform.setAttribute("onsubmit","signupformSubmit(); return false");
     }
 
-    if( tabselectors != null ){
+    if( tabselectors != null )
+    {
         /* attach tab selector functions */
-        for( i = 0 ; i < tabselectors.length ; ++i ){
+        for( i = 0 ; i < tabselectors.length ; ++i )
+	{
             tabselectors[i].addEventListener("click", switchTabByTabSelector);
             tabselectors[i].addEventListener("mouseover", tabselectorHighlight);
             tabselectors[i].addEventListener("mouseleave", tabselectorNormalize);
@@ -147,7 +149,8 @@ var attachHandlers = function() {
 
     }
 
-    if( changepasswordform != null ){
+    if( changepasswordform != null )
+    {
         /* attach changepasswordformSubmit */
         changepasswordform.setAttribute("onsubmit","changepasswordformSubmit(); return false");
 
@@ -159,68 +162,83 @@ var attachHandlers = function() {
         rptnewpwinputelement.addEventListener("input", changepwPasswordHelper);
     }
 
-    if( signoutbutton != null ){
+    if( signoutbutton != null )
+    {
         /* attach logOutClick */
         signoutbutton.addEventListener("click", logOutClick);
     }
 
-    if( selfpostbutton != null ){
+    if( selfpostbutton != null )
+    {
         /* attach selfPostClick */
         selfpostbutton.addEventListener("click", selfPostClick);
     }
 
-    if( selfwallrefreshbutton != null ){
+    if( selfwallrefreshbutton != null )
+    {
         /* attach (self) updateWall */
         selfwallrefreshbutton.setAttribute("onclick", "updateWall()");
     }
 
-    if( browsepostbutton != null ){
+    if( browsepostbutton != null )
+    {
         /* attach browsePostClick */
         browsepostbutton.addEventListener("click", browsePostClick);
     }
 
-    if( browsewallrefreshbutton != null ){
+    if( browsewallrefreshbutton != null )
+    {
         /* attach (self) updateWall */
         browsewallrefreshbutton.setAttribute("onclick", "updateWall(browsecontext.email)");
     }
 
-    if( fetchuserbutton != null ){
+    if( fetchuserbutton != null )
+    {
         /* attach browseUserClick */
         fetchuserbutton.addEventListener("click",browseUserClick);
     }
 
 };
-var signupPasswordHelper = function() {
+
+var signupPasswordHelper = function() 
+{
     var password = document.getElementById("passwordinput").value;
     var repeatpassword = document.getElementById("repeatpasswordinput").value;
     var SUETBelement = document.getElementById("signuperrortextbox");
 
-    if( password === "" ){
+    if( password === "" )
+    {
         SUETBelement.innerHTML = "";
     }
-    else if( password.length < 4 ){
+    else if( password.length < 4 )
+    {
         SUETBelement.style.color="red";
         SUETBelement.innerHTML="Password too short";
     }
-    else if( password === repeatpassword ){
+    else if( password === repeatpassword )
+    {
         SUETBelement.style.color="green";
 
-        if( password === "password"){
+        if( password === "password")
+	{
             SUETBelement.innerHTML="I deserve this";
         }
-        else{
+        else
+	{
             SUETBelement.innerHTML="Password OK";
             return true;
         }
     }
-    else{
+    else
+    {
         SUETBelement.style.color = "red";
         SUETBelement.innerHTML = "Passwords do not match";
     }
     return false;
-
 };
-var loginformSubmit = function() {
+
+var loginformSubmit = function() 
+{
     var loginemail = document.getElementById("loginemailinput").value;
     var loginpassword = document.getElementById("loginpasswordinput").value;
 
@@ -229,10 +247,12 @@ var loginformSubmit = function() {
 
     post("/sign-in", postData, function(response){
 
-	if(response.success){
+	if(response.success)
+	{
 	    localStorage.setItem("localtoken", JSON.stringify(response.data));
 	    get("/data-by-token/" + response.data, function(response2){
-		if(response2.success){
+		if(response2.success)
+		{
 		    localdata = JSON.stringify(response2.data);
 
 		    // testboys
@@ -241,18 +261,22 @@ var loginformSubmit = function() {
 		}
 	    }); 
 	}
-	else{
+	else
+	{
 	    document.getElementById("loginerrortextbox").innerHTML = response.message;
 	}
     });
 
 };
-var signupformSubmit = function() {
+
+var signupformSubmit = function() 
+{
     var newsignee;
     var signupresponse;
     var SUETBelement = document.getElementById("signuperrortextbox");
 
-    if( ! signupPasswordHelper() ){
+    if( !signupPasswordHelper() )
+    {
         return;
     }
 
@@ -288,10 +312,13 @@ var signupformSubmit = function() {
     }); 
 
 };
-var switchTabByTabSelector = function() {
+
+var switchTabByTabSelector = function() 
+{
     var tabs = document.getElementsByClassName("tab");
 
-    for( i = 0 ; i < tabs.length ; ++i ) {
+    for( i = 0 ; i < tabs.length ; ++i ) 
+    {
         tabs[i].style.display = "none";
     }
     /* this.id == "<tabwewant>selector" */
@@ -300,70 +327,91 @@ var switchTabByTabSelector = function() {
     updateWall();
 
 };
-var tabselectorHighlight = function() {
+
+var tabselectorHighlight = function() 
+{
     document.getElementById(this.id).style.backgroundColor = "#f0e1e6";
 
 };
-var tabselectorNormalize = function(){
+
+var tabselectorNormalize = function()
+{
     document.getElementById(this.id).style.backgroundColor = "#fff0f5";
 
 };
-var changepwPasswordHelper = function() {
+
+var changepwPasswordHelper = function()
+{
     var newpassword = document.getElementById("newpasswordinput").value;
     var repeatnewpassword = document.getElementById("repeatnewpasswordinput").value;
     var CPWETBelement = document.getElementById("changepassworderrortextbox");
 
-    if( newpassword === "" ){
+    if( newpassword === "" )
+    {
         CPWETBelement.innerHTML="";
     }
-    else if( newpassword.length < 4 ){
+    else if( newpassword.length < 4 )
+    {
         CPWETBelement.style.color="red";
         CPWETBelement.innerHTML="New password too short";
     }
-    else if( newpassword === repeatnewpassword ){
+    else if( newpassword === repeatnewpassword )
+    {
         CPWETBelement.style.color="green";
 
-        if( newpassword === "password"){
+        if( newpassword === "password")
+	{
             CPWETBelement.innerHTML="I deserve this";
         }
-        else{
+        else
+	{
             CPWETBelement.innerHTML="New password OK";
             return true;
         }
     }
-    else{
+    else
+    {
         CPWETBelement.style.color = "red";
         CPWETBelement.innerHTML = "New passwords do not match";
     }
     return false;
 
 };
-var changepasswordformSubmit = function() {
+
+var changepasswordformSubmit = function() 
+{
     var localtokenJSON = localStorage.getItem("localtoken");
     var localtokenobject;
     var CPWETBelement = document.getElementById("changepassworderrortextbox");
     var changepasswordresponse;
 
-    if( ! changepwPasswordHelper() ){
+    if( ! changepwPasswordHelper() )
+    {
         return;
     }
 
-    if( localtokenJSON === null ){
-        // No token in local storage
+    if( localtokenJSON === null )
+    {
+	// No token in local storage
 
     }
-    else{
+    else
+    {
         localtokenobject = JSON.parse(localtokenJSON);
 
 	post("/change-password", "token="+JSON.parse(localtokenJSON) 
 	     + "&old_password=" + document.getElementById("oldpasswordinput").value
-	     + "&new_password=" + document.getElementById("newpasswordinput").value, function(response){
+	     + "&new_password=" + document.getElementById("newpasswordinput").value, 
+	     function(response)
+	     {
 		 CPWETBelement.innerHTML = response.message;
-		 if( response.success ){
+		 if( response.success )
+		 {
 		     CPWETBelement.style.color = "green";
 		     document.getElementById("changepasswordform").reset();
 		 }
-		 else{
+		 else
+		 {
 		     CPWETBelement.style.color = "red";
 		 }
 	     }); 
@@ -372,7 +420,8 @@ var changepasswordformSubmit = function() {
     }
 
 };
-var logOutClick = function() {
+var logOutClick = function() 
+{
     var localtokenJSON = localStorage.getItem("localtoken");
     
     
@@ -385,12 +434,14 @@ var logOutClick = function() {
     else{
         post("/sign-out", "token="+JSON.parse(localtokenJSON), function(response){
 
-            if( response.success ){
+            if( response.success )
+	    {
 		localStorage.removeItem("localtoken");
 		localStorage.removeItem("localdata");
 		displayWelcomeView();
             }
-            else{
+            else
+	    {
 		//Something went wrong, pretend everything is alright
 		SOETBelement.innerHTML=signoutresponse.message;
             }
@@ -398,81 +449,97 @@ var logOutClick = function() {
     }
 
 };
-var selfPostClick = function() {
+
+var selfPostClick = function() 
+{
     var localtokenJSON = localStorage.getItem("localtoken");
     var content = document.getElementById("homeposttextarea").value;
-   // var localdataJSON = localStorage.getItem("localdata");
- 
+    // var localdataJSON = localStorage.getItem("localdata");
+    
     post("/post", "message="+content + "&token=" + JSON.parse(localtokenJSON) + "&email="
-	 + JSON.parse(localdata).email, function(response){
+	 + JSON.parse(localdata).email, function(response)
+	 {
 	     document.getElementById("homeposttextarea").value = "";
 	 });
 
     updateWall(); 
 
 };
-var browsePostClick = function() {
+
+var browsePostClick = function() 
+{
     var localtokenJSON = localStorage.getItem("localtoken");
     var content = document.getElementById("browseposttextarea").value;
     var email = browsecontext.email;
     post("/post", "message="+content + "&token=" + JSON.parse(localtokenJSON) + "&email="
-	 + email, function(response){
+	 + email, function(response)
+	 {
              document.getElementById("browseposttextarea").value = "";
 	     updateWall(email);
 	 });
 
 };
-var clientPostMessage = function(token, content, toEmail, self) {
+
+var clientPostMessage = function(token, content, toEmail, self) 
+{
     //serverstub.postMessage(token, content, toEmail);
 
-    if( self ){
+    if( self )
+    {
         updateWall();
     }
-    else{
+    else
+    {
         updateWall(toEmail);
     }
 
 };
-var browseUserClick = function () {
+
+var browseUserClick = function () 
+{
     var localtokenJSON = localStorage.getItem("localtoken");
     var email = document.getElementById("browseuserinput").value;
     //    var browseuserdata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token, email);
-if(email != ""){
-    get("/data-by-email/" + JSON.parse(localtokenJSON) + "/" +
-	email, function(response)
-	{
-	    
-	    if(response.success){
-		/* fill in the template and make it visible */
-		document.getElementById("userpagetemplate").style.display = "block";
-		document.getElementById("browsefirstname").innerHTML = response.data.firstname;
-		document.getElementById("browsefamilyname").innerHTML = response.data.familyname;
-		document.getElementById("browseemail").innerHTML = response.data.email;
-		document.getElementById("browsegender").innerHTML = response.data.gender;
-		document.getElementById("browsecity").innerHTML = response.data.city;
-		document.getElementById("browsecountry").innerHTML = response.data.country;
+    if(email != "")
+    {
+	get("/data-by-email/" + JSON.parse(localtokenJSON) + "/" +
+	    email, function(response)
+	    {
+		
+		if(response.success)
+		{
+		    /* fill in the template and make it visible */
+		    document.getElementById("userpagetemplate").style.display = "block";
+		    document.getElementById("browsefirstname").innerHTML = response.data.firstname;
+		    document.getElementById("browsefamilyname").innerHTML = response.data.familyname;
+		    document.getElementById("browseemail").innerHTML = response.data.email;
+		    document.getElementById("browsegender").innerHTML = response.data.gender;
+		    document.getElementById("browsecity").innerHTML = response.data.city;
+		    document.getElementById("browsecountry").innerHTML = response.data.country;
 
-		/* fill browsecontext fam */
-		browsecontext.firstname = response.data.firstname;
-		browsecontext.familyname = response.data.familyname;
-		browsecontext.email = response.data.email;
-		browsecontext.gender = response.data.gender;
-		browsecontext.city = response.data.city;
-		browsecontext.country = response.data.country;
+		    /* fill browsecontext fam */
+		    browsecontext.firstname = response.data.firstname;
+		    browsecontext.familyname = response.data.familyname;
+		    browsecontext.email = response.data.email;
+		    browsecontext.gender = response.data.gender;
+		    browsecontext.city = response.data.city;
+		    browsecontext.country = response.data.country;
 
-		updateWall(email);
-	    }
-	    else{
-		//output some form of error
-	    }
-	}); 
-}
+		    updateWall(email);
+		}
+		else
+		{
+		    //output some form of error
+		}
+	    }); 
+    }
     //   var browseusermessages = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
 
 
 
 };
-var updateWall = function(email) {
+var updateWall = function(email) 
+{
     /* updateWall to eventually be a callback function? */
     var messages = "";
     var messagesHTML = "";
@@ -484,10 +551,12 @@ var updateWall = function(email) {
 	//konstigt. post för andra människor hamnar på min wall.
     {
 	get("/messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
-	    + email, function(response){
+	    + email, function(response)
+	    {
 		if(response.success){
 		    messages=response.data; 
-		    for( i = 0; i < messages.length; ++i ){
+		    for( i = 0; i < messages.length; ++i )
+		    {
 			messagesHTML = messagesHTML + "<p>" + messages[i].fromUser
 			    + " wrote:</p>" + "<p>" + messages[i].content + "</p><hr />";
 		    }
@@ -496,12 +565,15 @@ var updateWall = function(email) {
 		}
 	    });
     }
-    else{	
+    else
+    {	
 	get("/messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
-	    + JSON.parse(localdata).email, function(response){
+	    + JSON.parse(localdata).email, function(response)
+	    {
 		if(response.success){
 		    messages=response.data; 
-		    for( i = 0; i < messages.length; ++i ){
+		    for( i = 0; i < messages.length; ++i )
+		    {
 			messagesHTML = messagesHTML + "<p>" + messages[i].fromUser
 			    + " wrote:</p>" + "<p>" + messages[i].content + "</p><hr />";
 		    }
@@ -514,28 +586,33 @@ var updateWall = function(email) {
 
 
 /*testing theseboys*/
-function post(url, postData, callback){
+function post(url, postData, callback)
+{
     var xmlHttp = new XMLHttpRequest();
     var async = true;
 
 
     xmlHttp.open("POST", url, async);
     xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlHttp.onreadystatechange = function () {
-	if( xmlHttp.readyState == 4 && xmlHttp.status == 200){
+    xmlHttp.onreadystatechange = function () 
+    {
+	if( xmlHttp.readyState == 4 && xmlHttp.status == 200)
+	{
 	    callback(JSON.parse(xmlHttp.responseText)); 
 	}
     }
     xmlHttp.send(postData); 
 }
 
-function get(url, callback){
+function get(url, callback)
+{
     var xmlHttp = new XMLHttpRequest();
     var async = true;
 
 
     xmlHttp.open("GET", url, async);
-    xmlHttp.onreadystatechange = function () {
+    xmlHttp.onreadystatechange = function () 
+{
 	if( xmlHttp.readyState == 4 && xmlHttp.status == 200){
 	    callback(JSON.parse(xmlHttp.responseText)); 
 	}
@@ -544,26 +621,35 @@ function get(url, callback){
 }
 
 
-function connectSocket(email) {
+function connectSocket(email) 
+{
 
     var ws = new WebSocket("ws://localhost:5000/connect-socket");
 
-    ws.onopen = function() {
+    ws.onopen = function() 
+    {
         ws.send(email);
     };
 
-    ws.onmessage = function(response) {
-        console.log(response.data);
-        if (response.data == "logout") {
-            logOutClick();
+    ws.onmessage = function(response) 
+    {
+	
+        console.log(JSON.parse(response.data));
+        if (JSON.parse(response.data) == "logout") 
+	{
+	    //	    logOutClick();
+	    localStorage.removeItem("localtoken"); 
+	    displayWelcomeView(); 
         };
     };
 
-    ws.onclose = function() {
+    ws.onclose = function() 
+    {
         console.log("WebSocket closed");
     };
 
-    ws.onerror = function() {
+    ws.onerror = function() 
+    {
         console.log("ERROR!");
     };
 }
