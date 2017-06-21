@@ -5,7 +5,17 @@
     <link href="client.css" type="text/css" rel="stylesheet">
     <script src="client.js" type="text/javascript"></script>
     <script src="serverstub.js" type="text/javascript"></script>
+
+    <!-- <script type="text/javascript"  -->
+    <!-- 	    src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"></script> -->
+    <!-- <script type="text/javascript"  -->
+    <!-- 	    src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core.js"></script> -->
+    <!-- <script type="text/javascript"  -->
+    <!-- 	    src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/enc-base64-min.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/aes.js"></script> -->
+    
     <script type="text/view" id="welcomeview">
+
         <div class="container" id="welcomecontainer">
             <div class="leftpanel">
                 <img src="wimage.png" />
@@ -46,37 +56,40 @@
         </div>
     </script>
     <script type="text/view" id="profileview">
-        <div class="container" id="profilecontainer">
-            <div class="tabselector" id="hometabselector" onmouseover="" onmouseleave="" onclick="">Home</div>
-            <div class="tabselector" id="browsetabselector" onmouseover="" onmouseleave="" onclick="">Browse</div>
-            <div class="tabselector" id="accounttabselector" onmouseover="" onmouseleave="" onclick="">Account</div>
+      <div class="container" id="profilecontainer">
+        <div class="tabselector" id="hometabselector" onmouseover="" onmouseleave="" onclick="">Home</div>
+        <div class="tabselector" id="browsetabselector" onmouseover="" onmouseleave="" onclick="">Browse</div>
+        <div class="tabselector" id="accounttabselector" onmouseover="" onmouseleave="" onclick="">Account</div>
 
-            <div class="tab" id="hometab">
-                <div class="profileleftpanel" id="homeleftpanel">
-                    <p>Hello <span class="userfirstname"></span> <span class="userfamilyname"></span>!</p>
-                    <p>Account information</p>
-                    <p>
-                        E-mail: <span class="useremail"></span><br />
-                        Assumed gender: <span class="usergender"></span><br />
-                        City: <span class="usercity"></span><br />
-                        Country: <span class="usercountry"></span><br />
-                    </p>
-                </div>
-                <div class="profilerightpanel" id="homerightpanel">
-                    <textarea class="posttextarea" id="homeposttextarea" placeholder="Write something interdasting..."></textarea>
-                    <button id="selfpostbutton" type="button" formmethod="post" onclick="">Post</button>
-                </div>
-                <div class="profilebottompanel" id="homebottompanel">
-                    <button id="selfwallrefresh" type="button" onclick="">Refresh</button>
-                    <div id="selfwall"></div>
-                    <div class="wallspacer"></div>
-                </div>
-            </div>
+        <div class="tab" id="hometab">
+          <div class="profileleftpanel" id="homeleftpanel">
+            <p>Hello <span class="userfirstname"></span> <span class="userfamilyname"></span>!</p>
+            <p>Account information</p>
+            <p>
+              E-mail: <span class="useremail"></span><br />
+              Assumed gender: <span class="usergender"></span><br />
+              City: <span class="usercity"></span><br />
+              Country: <span class="usercountry"></span><br />
+            </p>
+          </div>
+          <div class="profilerightpanel" id="homerightpanel">
+            <textarea class="posttextarea" id="homeposttextarea" placeholder="Write something interdasting..."></textarea>
+            <button id="selfpostbutton" type="button" formmethod="post" onclick="">Post</button>
+          </div>
+          <div class="profilebottompanel" id="homebottompanel">
+            <button id="selfwallrefresh" type="button" onclick="">Refresh</button>
+            <div id="selfwall"></div>
+            <div class="wallspacer"></div>
+          </div>
 
-            <div class="tab" id="browsetab">
-                <div id="browseusersinterface">
-                    <input id="browseuserinput" type="email" placeholder="Enter the email of a user" />
-                    <button id="browseuserbutton" type="button" onclick="">Find user</button>
+	  
+
+        </div>
+
+        <div class="tab" id="browsetab">
+          <div id="browseusersinterface">
+            <input id="browseuserinput" type="email" placeholder="Enter the email of a user" />
+            <button id="browseuserbutton" type="button" onclick="">Find user</button>
                 </div>
                 <div id="userpagetemplate">
                     <div class="profileleftpanel" id="browseleftpanel">
@@ -98,10 +111,13 @@
                     <div class="profilebottompanel" id="browsebottompanel">
                         <button id="browsewallrefresh" type="button" onclick="">Refresh</button>
                         <div id="browsewall"></div>
-                        <div class="wallspacer"></div>
+                         <div class="wallspacer"></div>
                     </div>
+
                 </div>
+		   
             </div>
+
 
             <div class="tab" id="accounttab">
                 <div class="profileleftpanel" id="accountleftpanel">
@@ -121,9 +137,13 @@
 
         </div>
     </script>
-    <title>Mandalorian amphibious art sharing support group</title>
+ 
+    <title>Mad sus Basketball Website</title>
 </head>
 <body>
-    <div id="viewdiv"></div>
+  <div id="viewdiv"></div>
+
 </body>
+
 </html>
+

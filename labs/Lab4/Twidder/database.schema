@@ -1,8 +1,10 @@
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS online_users;
 DROP TABLE IF EXISTS messages;
 
 
-CREATE TABLE users (
+
+CREATE TABLE users(
   email TEXT PRIMARY KEY ,
   password TEXT NOT NULL,
   salt TEXT,
@@ -14,18 +16,27 @@ CREATE TABLE users (
 );
 
 
+
+CREATE TABLE online_users(
+       email TEXT, 
+       token TEXT PRIMARY KEY,
+       FOREIGN KEY(email) REFERENCES users(email) 
+); 
+
+
+
 CREATE TABLE messages (
   id integer PRIMARY KEY ,
   content TEXT NOT NULL ,
   toUser INTEGER NOT NULL ,
   fromUser INTEGER NOT NULL ,
-  FOREIGN KEY(toUser) REFERENCES users(id),
-  FOREIGN KEY(fromUser) REFERENCES users(id)
+  FOREIGN KEY(toUser) REFERENCES users(email),
+  FOREIGN KEY(fromUser) REFERENCES users(email)
 );
 
-	/*
-	
-	Login credentials for these boys are
+
+
+	/* Login credentials for these boys are
 
 	duke@winter.maul      1234
 	shaq@nba.com	      hoops
@@ -33,20 +44,23 @@ CREATE TABLE messages (
 
 	Since the passwords are salted before they are stored, shaq
 	and mjordan can have the same passwords without them being
-	equal in the database.
-
-	*/
+	equal in the database.  */
 
 
-INSERT INTO USERS (email, password, salt, firstname, familyname, gender,
-city, country) 
-VALUES ('duke@winter.maul', '$2b$12$qqvdmtNXstLIfK5wKQ.qA.uUaaWamD7VquCNOt6yAyXyuOgY1MEhK', 'PXS9WO9Q', 'duke', 'wintermaul', 'male', 'Icecrown Citadel', 'Northrend'); 
 
-INSERT INTO USERS (email, password, salt, firstname, familyname, gender,
-city, country) 
-VALUES ('shaq@nba.com', '$2b$12$UkobeklZUvx4t01ZvVp.0e2DbKv4rTp6shtTobL0x85H2B3JQdgiG', 'FU823H7K', 'Shaquile', 'O\'Neil', 'male', 'Chicago', 'USA')
-INSERT INTO USERS (email, password, salt, firstname, familyname, gender,
-city, country) 
-VALUES ('mjordan@nba.com', '$2b$12$MDh/J6wI90zXRIkbXaHX9Oa96EbCi8WtuMmkqSNLBDJL3CnGSsqXK', 'F9R1NOHF', 'Michael', 'Jordan', 'male', 'Chicago', 'USA')
+INSERT INTO users (email, password, salt, firstname, familyname, gender,
+city, country) VALUES ('duke@winter.maul', 
+'$2b$12$qqvdmtNXstLIfK5wKQ.qA.uUaaWamD7VquCNOt6yAyXyuOgY1MEhK', 
+'PXS9WO9Q', 'duke', 'wintermaul', 'male', 'Icecrown Citadel', 'Northrend'); 
+
+INSERT INTO users (email, password, salt, firstname, familyname, gender,
+city, country) VALUES ('shaq@nba.com', 
+'$2b$12$UkobeklZUvx4t01ZvVp.0e2DbKv4rTp6shtTobL0x85H2B3JQdgiG', 
+'FU823H7K', 'Shaquile', 'ONeil', 'male', 'Chicago', 'USA');
+
+INSERT INTO users (email, password, salt, firstname, familyname, gender,
+city, country) VALUES ('mjordan@nba.com', 
+'$2b$12$MDh/J6wI90zXRIkbXaHX9Oa96EbCi8WtuMmkqSNLBDJL3CnGSsqXK', 
+'F9R1NOHF', 'Michael', 'Jordan', 'male', 'Chicago', 'USA');
 
 

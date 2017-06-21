@@ -21,9 +21,11 @@ def query_db(query, args=(), one=False):
 
 
 def get_user_data(email):
-    user_data = query_db('select email, password, firstname, familyname, gender, city, country from users where email=? ',
+    user_data = query_db('select * from users where email=? ',
                          [email])
     return user_data[0]
+
+
 
 def get_user_password(email):
     user_password = query_db('select password, salt from users where email=? ',
@@ -43,11 +45,55 @@ def update_password(email, password):
     get_db().commit()
     return response
 
+# def update_token(email, token):
+#     response = query_db('update users set token=? where email=?',
+#                         [token, email])
+#     get_db().commit()
+#     return response
+
+# def delete_token(email):
+#     response = query_db('update users set token=NULL where email=?',
+#                         [email])
+#     get_db().commit()
+#     return response
 
 def add_user(email, password, salt, firstname, familyname, gender, city, country):
     query_db('insert into users values (?, ?, ?, ?, ?, ?, ?, ?)',
              [email, password, salt, firstname, familyname, gender, city, country])
     get_db().commit()
+
+def get_online_user_data(email):
+    user_data = query_db('select * from online_users where email=? ',
+                         [email])
+    return user_data[0]
+
+def get_online_user_data_token(token):
+    user_data = query_db('select * from online_users where token=? ',
+                         [token])
+    if user_data: 
+        return user_data[0]
+    return
+
+def update_token(email, token): #will add if there is no token
+    response = query_db('select * from online_users where email=? ',
+             [email])
+
+    if response: 
+        delete_token(email)
+
+    query_db('insert into online_users values (?, ?)',
+             [email, token])
+    get_db().commit()
+
+def delete_token(email):
+    response = query_db('delete from online_users where email=? ',
+                        [email])
+    return response
+
+def delete_token_token(token):
+    response = query_db('delete from online_users where token=? ',
+                        [token])
+    return response
 
 
 def add_message(message, from_user, to_user):

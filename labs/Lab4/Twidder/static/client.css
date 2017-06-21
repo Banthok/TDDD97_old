@@ -37,6 +37,7 @@ textarea {
 
     border-style: solid;
     border-width: 2px;
+    border-color: khaki; 
 }
 
 .rightpanel {
@@ -59,6 +60,7 @@ textarea {
 
     border-style: solid;
     border-width: 2px;
+    border-color: khaki; 
 }
 
 #signupbox {
@@ -72,6 +74,7 @@ textarea {
 
     border-style: solid;
     border-width: 2px;
+    border-color: khaki; 
 }
 
 #signupheader {
@@ -128,6 +131,10 @@ select {
     width: 800px;
     height: 400px;
     background-color: darkkhaki;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: khaki; 
 }
 
 .tabselector {
@@ -162,17 +169,27 @@ select {
     position: relative;
     top: 400px;
     background-color: #ffff95;
+
+ 
 }
 
 .posttextarea {
     width: 296px;
     height: 150px;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: khaki; 
 }
 
 .wallspacer {
+
     height: 25px;
     width: 100%;
+    
     background-color: cadetblue; 
+
+
 }
 
 /* PROFILE PAGE: HOME */
