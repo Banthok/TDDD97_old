@@ -180,7 +180,7 @@ def socket_connect():
         obj = ws.receive()
         data = json.loads(obj)
 
-        if not database_helper.get_online_user(data['token']):
+        if not database_helper.get_online_user_data_token(data['token']):
             ws.send(json.dumps({"success": False, "message": "You are not signed in."}))
 
         try:
@@ -189,12 +189,17 @@ def socket_connect():
                 print data['email'] + ' already has active socket'
 
             print 'Setting socket for: ' + data['email']
+
             current_sockets[data['email']] = ws
 
             while True:
                 obj = ws.receive()
                 if obj == None:
-                    del current_sockets[data['email']]
+                    print 'Deleting socket for: ' + data['email']
+                    try:
+                        current_sockets.pop(data['email'])
+                    except KeyError: #seems to happen on login after proper logout
+                        print "No such email"
                     ws.close()
                     print 'Socket closed: ' + data['email']
                     return ''

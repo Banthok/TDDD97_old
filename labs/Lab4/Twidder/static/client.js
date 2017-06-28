@@ -419,26 +419,22 @@ var logOutClick = function()
 {
     var SOETBelement = document.getElementById("signouterrortextbox");
 
-    // if( localtokenJSON === null ){
-    //     // No token in local storage
+    post("/sign-out", "token="+JSON.parse(localStorage.getItem("localtoken")), 
+	 function(response){
 
-    // }
-    // else{
-    post("/sign-out", "token="+JSON.parse(localStorage.getItem("localtoken")), function(response){
+             if( response.success )
+	     {
+		 localStorage.removeItem("localtoken");
+		 localStorage.removeItem("localdata");
+		 displayWelcomeView();
+             }
+             else
+	     {
+		 //Something went wrong, pretend everything is alright
+		 SOETBelement.innerHTML=signoutresponse.message;
+             }
 
-        if( response.success )
-	{
-	    localStorage.removeItem("localtoken");
-	    localStorage.removeItem("localdata");
-	    displayWelcomeView();
-        }
-        else
-	{
-	    //Something went wrong, pretend everything is alright
-	    SOETBelement.innerHTML=signoutresponse.message;
-        }
-    });
-    // }
+	 });
 
 };
 
