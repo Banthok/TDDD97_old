@@ -1,60 +1,56 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
+  <head lang="en">
     <meta charset="UTF-8">
     <link href="client.css" type="text/css" rel="stylesheet">
     <script src="client.js" type="text/javascript"></script>
     <script src="serverstub.js" type="text/javascript"></script>
 
-    <!-- <script type="text/javascript"  -->
-    <!-- 	    src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"></script> -->
-    <!-- <script type="text/javascript"  -->
-    <!-- 	    src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core.js"></script> -->
-    <!-- <script type="text/javascript"  -->
-    <!-- 	    src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/enc-base64-min.js"></script> -->
-    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/aes.js"></script> -->
-    
+    <!-- WELCOME VIEW -->
     <script type="text/view" id="welcomeview">
-
-        <div class="container" id="welcomecontainer">
-            <div class="leftpanel">
-                <img src="wimage.png" />
-                <div id="leftpanelborder"></div>
-            </div>
-            <div class="rightpanel">
-                <div id="loginbox">
-                    <form id="loginform" method="post" onsubmit=""> <!-- added method-->
-                        <div class="row"><label>Email</label><input id="loginemailinput"
-                        type="text" required /></div>
-                        <div class="row"><label>Password</label><input id="loginpasswordinput"
-                        type="password" required /></div>
-                        <div class="row"><div id="loginerrortextbox"
-                        class="errortextbox"></div><input id="loginsubmit"
-                        type="submit" value="Log in" /></div>
-                    </form>
-                </div>
-                <div id="signupbox">
-                    <form id="signupform" method="post" onsubmit="">
-                        <div id="signupheader">Sign up here, fam</div>
-                        <div class="row"><label>Email</label><input class="signupinput" id="emailinput" type="email" required /></div>
-                        <div class="row"><label>First name</label><input class="signupinput" id="firstnameinput" type="text" required /></div>
-                        <div class="row"><label>Family name</label><input class="signupinput" id="familynameinput" type="text" required /></div>
-                        <div class="row"><label>Gender</label><select id="genderinput" name="genders">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            </select>
-                        </div>
-                        <div class="row"><label>City</label><input class="signupinput" id="cityinput" type="text" required /></div>
-                        <div class="row"><label>Country</label><input class="signupinput" id="countryinput" type="text" required /></div>
-                        <div class="row"><label>Password</label><input class="signupinput" id="passwordinput" type="password" required /></div>
-                        <div class="row"><label>Repeat PSW</label><input class="signupinput" id="repeatpasswordinput" type="password" required /></div>
-                        <div class="row"><div id="signuperrortextbox" class="errortextbox"></div><input id="signupsubmit" type="submit" value="Sign up" /></div>
-                    </form>
-
-                </div>
-            </div>
+      <div class="container" id="welcomecontainer">
+        <div class="leftpanel">
+          <img src="wimage.png" />
+          <div id="leftpanelborder"></div>
         </div>
+        <div class="rightpanel">
+          <div id="loginbox">
+            <form id="loginform" method="post" onsubmit=""> 
+              <div class="row"><label>Email</label><input id="loginemailinput"
+							  type="text" required /></div>
+              <div class="row"><label>Password</label><input id="loginpasswordinput"
+							     type="password" required /></div>
+              <div class="row"><div id="loginerrortextbox"
+				    class="errortextbox"></div><input id="loginsubmit"
+								      type="submit" value="Log in" /></div>
+            </form>
+          </div>
+          <div id="signupbox">
+            <form id="signupform" method="post" onsubmit="">
+              <div id="signupheader">Sign up here, fam</div>
+              <div class="row"><label>Email</label><input class="signupinput" id="emailinput" type="email" required /></div>
+              <div class="row"><label>First name</label><input class="signupinput" id="firstnameinput" type="text" required /></div>
+              <div class="row"><label>Family name</label><input class="signupinput" id="familynameinput" type="text" required /></div>
+              <div class="row"><label>Gender</label><select id="genderinput" name="genders">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div class="row"><label>City</label><input class="signupinput" id="cityinput" type="text" required /></div>
+              <div class="row"><label>Country</label><input class="signupinput" id="countryinput" type="text" required /></div>
+              <div class="row"><label>Password</label><input class="signupinput" id="passwordinput" type="password" required /></div>
+              <div class="row"><label>Repeat PSW</label><input class="signupinput" id="repeatpasswordinput" type="password" required /></div>
+              <div class="row"><div id="signuperrortextbox" class="errortextbox"></div><input id="signupsubmit" type="submit" value="Sign up" /></div>
+            </form>
+
+          </div>
+        </div>
+      </div>
     </script>
+    <!-- /WELCOME VIEW -->
+
+
+    <!-- PROFILE VIEW -->
     <script type="text/view" id="profileview">
       <div class="container" id="profilecontainer">
         <div class="tabselector" id="hometabselector" onmouseover="" onmouseleave="" onclick="">Home</div>
@@ -62,20 +58,26 @@
         <div class="tabselector" id="accounttabselector" onmouseover="" onmouseleave="" onclick="">Account</div>
 
         <div class="tab" id="hometab">
+
           <div class="profileleftpanel" id="homeleftpanel">
-            <p>Hello <span class="userfirstname"></span> <span class="userfamilyname"></span>!</p>
-            <p>Account information</p>
+            <p>Welcome, <span class="userfirstname"></span> <span class="userfamilyname"></span>!</p>
+            <p>Account information:</p>
             <p>
               E-mail: <span class="useremail"></span><br />
-              Assumed gender: <span class="usergender"></span><br />
+              Gender: <span class="usergender"></span><br />
               City: <span class="usercity"></span><br />
               Country: <span class="usercountry"></span><br />
             </p>
+
+
+
           </div>
           <div class="profilerightpanel" id="homerightpanel">
-            <textarea class="posttextarea" id="homeposttextarea" placeholder="Write something interdasting..."></textarea>
+            <textarea class="posttextarea" id="homeposttextarea" placeholder="If you had one shot or one opportunity, would you capute it, or just let it slip..."></textarea>
             <button id="selfpostbutton" type="button" formmethod="post" onclick="">Post</button>
           </div>
+
+
           <div class="profilebottompanel" id="homebottompanel">
             <button id="selfwallrefresh" type="button" onclick="">Refresh</button>
             <div id="selfwall"></div>
@@ -89,61 +91,67 @@
         <div class="tab" id="browsetab">
           <div id="browseusersinterface">
             <input id="browseuserinput" type="email" placeholder="Enter the email of a user" />
+
+
+	    <div id="browseerrortextbox" class="errortextbox"></div>
+
             <button id="browseuserbutton" type="button" onclick="">Find user</button>
-                </div>
-                <div id="userpagetemplate">
-                    <div class="profileleftpanel" id="browseleftpanel">
-                        <p>Profile page of <span id="browsefirstname"></span> <span id="browsefamilyname"></span></p>
-                        <p>Account information</p>
-                        <p>
-                            E-mail: <span id="browseemail"></span><br />
-                            Assumed gender: <span id="browsegender"></span><br />
-                            City: <span id="browsecity"></span><br />
-                            Country: <span id="browsecountry"></span><br />
-                        </p>
-                    </div>
-                    <div class="profilerightpanel" id="browserightpanel">
-                        <textarea class="posttextarea" id="browseposttextarea" placeholder="Write something interdasting..."></textarea>
-                        <button id="browsepostbutton" type="button" formmethod="post" onclick="">Post</button>
-                    </div>
-
-
-                    <div class="profilebottompanel" id="browsebottompanel">
-                        <button id="browsewallrefresh" type="button" onclick="">Refresh</button>
-                        <div id="browsewall"></div>
-                         <div class="wallspacer"></div>
-                    </div>
-
-                </div>
-		   
+          </div>
+          <div id="userpagetemplate">
+            <div class="profileleftpanel" id="browseleftpanel">
+              <p>Profile page of <span id="browsefirstname"></span> <span id="browsefamilyname"></span></p>
+              <p>Account information</p>
+              <p>
+                E-mail: <span id="browseemail"></span><br />
+                Gender: <span id="browsegender"></span><br />
+                City: <span id="browsecity"></span><br />
+                Country: <span id="browsecountry"></span><br />
+              </p>
+            </div>
+            <div class="profilerightpanel" id="browserightpanel">
+              <textarea class="posttextarea" id="browseposttextarea"
+              placeholder="If you had one shot or one opportunity, would you capute it, or just let it slip..."></textarea>
+              <button id="browsepostbutton" type="button" formmethod="post" onclick="">Post</button>
             </div>
 
 
-            <div class="tab" id="accounttab">
-                <div class="profileleftpanel" id="accountleftpanel">
-                    <form id="changepasswordform" onsubmit="">
-                        <p>Change password?</p>
-                        <div class="row"><label>Old Password</label><input id="oldpasswordinput" type="password" required /></div>
-                        <div class="row"><label>New Password</label><input id="newpasswordinput" type="password" required /></div>
-                        <div class="row"><label>Repeat New</label><input id="repeatnewpasswordinput" type="password" required /></div>
-                        <div class="row"><div id="changepassworderrortextbox" class="errortextbox"></div><input id="changepasswordsubmit" type="submit" value="Yah" /></div>
-                    </form>
-                </div>
-                <div class="profilerightpanel" id="accountrightpanel">
-                    <button id="signoutbutton" type="button" onclick="">Log out</button>
-                    <div class="row"><div id="signouterrortextbox" class="errortextbox"></div>
-                </div>
+            <div class="profilebottompanel" id="browsebottompanel">
+              <button id="browsewallrefresh" type="button" onclick="">Refresh</button>
+              <div id="browsewall"></div>
+              <div class="wallspacer"></div>
             </div>
+
+          </div>
+	  
+        </div>
+
+
+        <div class="tab" id="accounttab">
+          <div class="profileleftpanel" id="accountleftpanel">
+            <form id="changepasswordform" onsubmit="">
+              <p>Change password?</p>
+              <div class="row"><label>Old Password</label><input id="oldpasswordinput" type="password" required /></div>
+              <div class="row"><label>New Password</label><input id="newpasswordinput" type="password" required /></div>
+              <div class="row"><label>Repeat New</label><input id="repeatnewpasswordinput" type="password" required /></div>
+              <div class="row"><div id="changepassworderrortextbox" class="errortextbox"></div><input id="changepasswordsubmit" type="submit" value="Yah" /></div>
+            </form>
+          </div>
+          <div class="profilerightpanel" id="accountrightpanel">
+            <button id="signoutbutton" type="button" onclick="">Log out</button>
+            <div class="row"><div id="signouterrortextbox" class="errortextbox"></div>
+            </div>
+          </div>
 
         </div>
     </script>
- 
+    <!-- /PROFILE VIEW -->
+    
     <title>Mad sus Basketball Website</title>
-</head>
-<body>
-  <div id="viewdiv"></div>
+  </head>
+  <body>
+    <div id="viewdiv"></div>
 
-</body>
+  </body>
 
 </html>
 

@@ -4,7 +4,6 @@
  * Consider formmethod="get" and "post"
  * addEventListeners -> setAttributes?
  */
-//var CryptoJS 		= require('crypto-js');    // crypto-js npm
 
 var browsecontext = { //user looked at while using browsetab
     "email": undefined,
@@ -29,9 +28,6 @@ var displayView = function()
     
     var localtokenJSON = localStorage.getItem("localtoken");
     var client_hash; 
-    //var localtokenobject;
-    //var localdataobject;
-    //var tokenresponse;
 
     if( localtokenJSON === null ){displayWelcomeView();} // no local token
     else{
@@ -104,8 +100,11 @@ window.onload = function()
     init();
 };
 
+
+
 var init = function()
 {
+
     displayView();
 };
 
@@ -254,6 +253,8 @@ var loginformSubmit = function()
 
 	if(response.success)
 	{
+	    connectSocket(loginemail);
+
 	    localStorage.setItem("localtoken", JSON.stringify(response.data));
 	    
 
@@ -268,7 +269,7 @@ var loginformSubmit = function()
 		    localdata = JSON.stringify(response2.data);
 
 		    // testboys
-		    connectSocket(loginemail);
+
 		    displayProfileView(JSON.stringify(response2.data));
 		}
 	    }); 
@@ -392,85 +393,71 @@ var changepwPasswordHelper = function()
 
 var changepasswordformSubmit = function() 
 {
-    var localtokenJSON = localStorage.getItem("localtoken");
-    var localtokenobject;
     var CPWETBelement = document.getElementById("changepassworderrortextbox");
-    var changepasswordresponse;
 
-    if( ! changepwPasswordHelper() )
-    {
-        return;
-    }
+    if( ! changepwPasswordHelper() ){return;}
 
-    // if( localtokenJSON === null )
-    // {
-    // 	// No token in local storage
-
-    // }
-    else
-    {
-	post("/change-password", "token="+JSON.parse(localtokenJSON) 
-	     + "&old_password=" + document.getElementById("oldpasswordinput").value
-	     + "&new_password=" + document.getElementById("newpasswordinput").value, 
-	     function(response)
+    post("/change-password", "token="+JSON.parse(localStorage.getItem("localtoken")) 
+	 + "&old_password=" + document.getElementById("oldpasswordinput").value
+	 + "&new_password=" + document.getElementById("newpasswordinput").value, 
+	 function(response)
+	 {
+	     CPWETBelement.innerHTML = response.message;
+	     if( response.success )
 	     {
-		 CPWETBelement.innerHTML = response.message;
-		 if( response.success )
-		 {
-		     CPWETBelement.style.color = "green";
-		     document.getElementById("changepasswordform").reset();
-		 }
-		 else
-		 {
-		     CPWETBelement.style.color = "red";
-		 }
-	     }); 
-
-
-    }
+		 CPWETBelement.style.color = "green";
+		 document.getElementById("changepasswordform").reset();
+	     }
+	     else
+	     {
+		 CPWETBelement.style.color = "red";
+	     }
+	 }); 
 
 };
 var logOutClick = function() 
 {
-    var localtokenJSON = localStorage.getItem("localtoken");
-    
-    
     var SOETBelement = document.getElementById("signouterrortextbox");
 
-    if( localtokenJSON === null ){
-        // No token in local storage
+    // if( localtokenJSON === null ){
+    //     // No token in local storage
 
-    }
-    else{
-        post("/sign-out", "token="+JSON.parse(localtokenJSON), function(response){
+    // }
+    // else{
+    post("/sign-out", "token="+JSON.parse(localStorage.getItem("localtoken")), function(response){
 
-            if( response.success )
-	    {
-		localStorage.removeItem("localtoken");
-		localStorage.removeItem("localdata");
-		displayWelcomeView();
-            }
-            else
-	    {
-		//Something went wrong, pretend everything is alright
-		SOETBelement.innerHTML=signoutresponse.message;
-            }
-	});
-    }
+        if( response.success )
+	{
+	    localStorage.removeItem("localtoken");
+	    localStorage.removeItem("localdata");
+	    displayWelcomeView();
+        }
+        else
+	{
+	    //Something went wrong, pretend everything is alright
+	    SOETBelement.innerHTML=signoutresponse.message;
+        }
+    });
+    // }
 
 };
 
 var selfPostClick = function() 
 {
-    var localtokenJSON = localStorage.getItem("localtoken");
     var content = document.getElementById("homeposttextarea").value;
-    // var localdataJSON = localStorage.getItem("localdata");
 
-    client_hash = "/post?message=" + content + "&token=" + JSON.parse(localtokenJSON) + "&email=" + JSON.parse(localdata).email + "&token=" + JSON.parse(localtokenJSON);
+    client_hash = "/post?message=" + content 
+	+ "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
+	+ "&email=" + JSON.parse(localdata).email 
+	+ "&token=" + JSON.parse(localStorage.getItem("localtoken"));
     client_hash = SHA1(client_hash);
     
-    post("/post", "message="+content + "&token=" + JSON.parse(localtokenJSON) + "&email="
-	 + JSON.parse(localdata).email + "&client_hash=" + client_hash, function(response)
+    post("/post", "message=" + content 
+	 + "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
+	 + "&email="
+	 + JSON.parse(localdata).email 
+	 + "&client_hash=" + client_hash, 
+	 function(response)
 	 {
 	     document.getElementById("homeposttextarea").value = "";
 	 });
@@ -481,15 +468,19 @@ var selfPostClick = function()
 
 var browsePostClick = function() 
 {
-    var localtokenJSON = localStorage.getItem("localtoken");
     var content = document.getElementById("browseposttextarea").value;
     var email = browsecontext.email;
 
-    client_hash = "/post?message=" + content + "&token=" + JSON.parse(localtokenJSON) + "&email=" + JSON.parse(localdata).email + "&token=" + JSON.parse(localtokenJSON);
+    client_hash = "/post?message=" + content 
+	+ "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
+	+ "&email=" + JSON.parse(localdata).email 
+	+ "&token=" + JSON.parse(localStorage.getItem("localtoken"));
     client_hash = SHA1(client_hash);
 
-    post("/post", "message="+content + "&token=" + JSON.parse(localtokenJSON) + "&email="
-	 + email, function(response)
+    post("/post", "message="+content 
+	 + "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
+	 + "&email=" + email, 
+	 function(response)
 	 {
              document.getElementById("browseposttextarea").value = "";
 	     updateWall(email);
@@ -514,15 +505,15 @@ var browseUserClick = function ()
 {
     var localtokenJSON = localStorage.getItem("localtoken");
     var email = document.getElementById("browseuserinput").value;
-    //    var browseuserdata = serverstub.getUserDataByEmail(JSON.parse(localtokenJSON).token, email);
+
     if(email != "")
     {
 
-	client_hash = "/data-by-email/" + JSON.parse(localtokenJSON);
+	client_hash = "/data-by-email/" + JSON.parse(localtokenJSON); 
 	client_hash = SHA1(client_hash);
 
-	get("/data-by-email/" + JSON.parse(localtokenJSON) + "/" +
-	    email + "/" + client_hash, function(response)
+	get("/data-by-email/" + email + "/"  + JSON.parse(localtokenJSON) + "/"
+	    + client_hash, function(response)
 	    {
 		
 		if(response.success)
@@ -545,16 +536,17 @@ var browseUserClick = function ()
 		    browsecontext.country = response.data.country;
 
 		    updateWall(email);
+	
+		    document.getElementById("browseerrortextbox").style.color = "green";
+		    document.getElementById("browseerrortextbox").innerHTML = "User found!";
 		}
 		else
 		{
-		    //output some form of error
+		    document.getElementById("browseerrortextbox").style.color = "red";
+		    document.getElementById("browseerrortextbox").innerHTML = response.message;
 		}
 	    }); 
     }
-    //   var browseusermessages = serverstub.getUserMessagesByEmail(JSON.parse(localtokenJSON).token, email);
-
-
 
 };
 var updateWall = function(email) 
@@ -566,8 +558,6 @@ var updateWall = function(email)
     var localtokenJSON = localStorage.getItem("localtoken");
 
     if(email != undefined)
-	//todo: denna funkar inte för icke-jag. jag tror anropet är
-	//konstigt. post för andra människor hamnar på min wall.
     {
 	client_hash = "/messages-by-email/" + JSON.parse(localtokenJSON);
 	client_hash = SHA1(client_hash);
@@ -614,8 +604,6 @@ var updateWall = function(email)
     }
 };
 
-
-/*testing theseboys*/
 function post(url, postData, callback)
 {
     var xmlHttp = new XMLHttpRequest();
@@ -653,35 +641,32 @@ function get(url, callback)
 
 function connectSocket(email) 
 {
+    ws = new WebSocket("ws://" + document.domain + ":5000/connect-socket");
+    ws.onopen = function() {
 
-    var ws = new WebSocket("ws://localhost:5000/connect-socket");
+	var data = {"email":email,"token":JSON.parse(localStorage.getItem("localtoken"))};
+	ws.send(JSON.stringify(data));
 
-    ws.onopen = function() 
-    {
-        ws.send(email);
     };
 
-    ws.onmessage = function(response) 
-    {
-	
-        console.log(JSON.parse(response.data));
-        if (JSON.parse(response.data) == "logout") 
-	{
-	    //	    logOutClick();
+    ws.onmessage = function(response) {
+
+	message = JSON.parse(response.data);
+	if (message.success == false) {
+
 	    localStorage.removeItem("localtoken"); 
-	    displayWelcomeView(); 
-        };
+   	    displayWelcomeView(); 
+	}
     };
 
-    ws.onclose = function() 
-    {
-        console.log("WebSocket closed");
+    ws.onclose = function() {
+	console.log("WebSocket closed");
     };
 
-    ws.onerror = function() 
-    {
-        console.log("ERROR!");
+    ws.onerror = function() {
+	console.log("ERROR!");
     };
+
 }
 
 

@@ -10,7 +10,6 @@ def get_db():
     return db
 
 
-
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = [dict((cur.description[i][0], value) \
@@ -23,9 +22,11 @@ def query_db(query, args=(), one=False):
 def get_user_data(email):
     user_data = query_db('select * from users where email=? ',
                          [email])
-    return user_data[0]
+    if user_data:
+        return user_data[0]
+    return None
 
-
+    
 
 def get_user_password(email):
     user_password = query_db('select password, salt from users where email=? ',
@@ -45,18 +46,6 @@ def update_password(email, password):
     get_db().commit()
     return response
 
-# def update_token(email, token):
-#     response = query_db('update users set token=? where email=?',
-#                         [token, email])
-#     get_db().commit()
-#     return response
-
-# def delete_token(email):
-#     response = query_db('update users set token=NULL where email=?',
-#                         [email])
-#     get_db().commit()
-#     return response
-
 def add_user(email, password, salt, firstname, familyname, gender, city, country):
     query_db('insert into users values (?, ?, ?, ?, ?, ?, ?, ?)',
              [email, password, salt, firstname, familyname, gender, city, country])
@@ -74,7 +63,7 @@ def get_online_user_data_token(token):
         return user_data[0]
     return
 
-def update_token(email, token): #will add if there is no token
+def update_token(email, token): #will add token if there is none
     response = query_db('select * from online_users where email=? ',
              [email])
 

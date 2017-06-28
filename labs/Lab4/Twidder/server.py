@@ -16,7 +16,7 @@ import re
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-current_sockets = {};
+current_sockets = dict();
 
 @app.route('/', methods=['GET'])
 def start():
@@ -32,8 +32,15 @@ def sign_in():
         hashword = database_helper.get_user_password(email)
         if bcrypt.check_password_hash(hashword['password'], password + hashword['salt']):
             token = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(30));
-            #logged_in_users[token] = email
             database_helper.update_token(email, token)
+            if email in current_sockets:
+                try:
+                    ws = current_sockets[email] 
+                    ws.send(json.dumps({'success' : False, 'message' : 'You have been logged out'}))
+                except WebSocketError as e:
+                    repr(e)
+                    print "WebSocketError on logout"
+                    del active_sockets[email]
             return jsonify({"success": True, "message": "Successfully signed in.", "data": token})
     except IndexError:
         return jsonify({"success": False, "message": "Incorrect username or password. indexerror."})
@@ -107,16 +114,20 @@ def get_user_data_by_token(token, client_hash):
     data = database_helper.get_user_data(email)
     return jsonify({"success": True, "message": "Ok!", "data": data})
 
-@app.route('/data-by-email/<token>/<email>/<client_hash>', methods=['GET'])
-def get_user_data_by_email(token, email, client_hash):
+@app.route('/data-by-email/<email>/<token>/<client_hash>', methods=['GET'])
+def get_user_data_by_email(email, token, client_hash):
     data = database_helper.get_user_data(email)
     onlines = database_helper.get_online_user_data_token(token)
 
+    requesteremail = onlines['email']
+ 
     if not onlines:
         return jsonify({"success": False, "message": "Token invalid."})
-    if not data:
+
+    if data == None:
         return jsonify({"success": False, "message": "No such email."})
-    if not verifyToken('data-by-email', email, client_hash):
+
+    if not verifyToken('data-by-email', requesteremail, client_hash):
         return jsonify({"success": False, "message": "Bad hash."})
 
     else:
@@ -126,12 +137,15 @@ def get_user_data_by_email(token, email, client_hash):
 def get_user_messages_by_email(token, email, client_hash):
     messages = database_helper.get_user_messages(email)
     onlines = database_helper.get_online_user_data_token(token)
-
-    if not verifyToken('messages-by-email', email, client_hash):
-        return jsonify({"success": False, "message": "Bad hash."})
+    requesteremail = onlines['email']
 
     if not onlines:
         return jsonify({"success": False, "message": "Token invalid."})
+
+    if not verifyToken('messages-by-email', requesteremail, client_hash):
+        return jsonify({"success": False, "message": "Bad hash."})
+
+
     if not messages:
         return jsonify({"success": False, "message": "No messages."})
 
@@ -149,9 +163,6 @@ def post_message():
         return jsonify({"success": False, "message": "Not logged in."})
     from_user = onlines['email']
 
-    if not verifyTokenPost('post', request):
-        return jsonify({"success": False, "message": "Bad hash."})
-
     try:
         database_helper.add_message(message, from_user, to_user)
         return jsonify({"success": True, "message": "Message posted."})
@@ -162,26 +173,47 @@ def post_message():
 
 @app.route('/connect-socket')
 def socket_connect():
-    if request.environ.get("wsgi.websocket"):
-        ws = request.environ["wsgi.websocket"]
-        while True:
-            try:
-                cur_email = ws.receive()
-                if cur_email in current_sockets:
-                    current_sockets[cur_email].send(json.dumps("logout"))
-                current_sockets[cur_email] = ws
-            except WebSocketError as e:
-                print("WebSocketError: " + str(e))
-                break
+
+    if request.environ.get('wsgi.websocket'):
+
+        ws = request.environ['wsgi.websocket']
+        obj = ws.receive()
+        data = json.loads(obj)
+
+        if not database_helper.get_online_user(data['token']):
+            ws.send(json.dumps({"success": False, "message": "You are not signed in."}))
+
+        try:
+        
+            if data['email'] in current_sockets:
+                print data['email'] + ' already has active socket'
+
+            print 'Setting socket for: ' + data['email']
+            current_sockets[data['email']] = ws
+
+            while True:
+                obj = ws.receive()
+                if obj == None:
+                    del current_sockets[data['email']]
+                    ws.close()
+                    print 'Socket closed: ' + data['email']
+                    return ''
 
 
+        except WebSocketError as e:
+            repr(e)
+            print "WebSocketError"
+            del current_sockets[data['email']]
+			
+    return ''
 
-# route should include all parameters except clientEmail and chash
+
 def verifyToken(route, email, client_hash, post=False):
     try: 
         token = database_helper.get_online_user_data(email)['token']
     except IndexError:
         return json.dumps({"success": False, "message": "You are not signed in."})
+
 
     if post:
         data = '/'+route+"&email="+email+'&token='+token
@@ -190,31 +222,7 @@ def verifyToken(route, email, client_hash, post=False):
 
     server_hash = hashlib.sha1(data.encode('utf-8')).hexdigest()
 
-    print 'data: ' + data
-    print 'Hash from client: ' + client_hash
-    print 'Hash from server: ' + server_hash
-
     return client_hash == server_hash
-
-def verifyTokenPost(route, request):
-    route += '?'
-    email = ''
-    client_hash = ''
-
-    for key in request.form:
-        print key
-        if key == "email":
-            email = request.form[key]
-        elif key == "client_hash":
-            client_hash = request.form[key]
-        else:
-            route += key +'='+request.form[key]+'&'
-
-    route = route[:-1]
-    print route
-    return verifyToken(route, email, client_hash, True)
-
-
 
 if __name__ == '__main__':
     app.debug = True
