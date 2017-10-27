@@ -29,6 +29,7 @@ def sign_in():
     email = request.form['username']
     password = request.form['password']
     try:
+        
         hashword = database_helper.get_user_password(email)
         if bcrypt.check_password_hash(hashword['password'], password + hashword['salt']):
             token = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(30));
@@ -96,55 +97,27 @@ def change_password():
         database_helper.update_password(email, bcrypt.generate_password_hash(new_password + salt))
         return jsonify({"success": True, "message": "Password changed!"})
 
-@app.route('/data-by-token/<token>/<client_hash>', methods=['GET'])
-def get_user_data_by_token(token, client_hash):
-    onlines = database_helper.get_online_user_data_token(token)
+@app.route('/data-by-email/<email>/<client_hash>/<requester_email>', methods=['GET'])
+def get_user_data_by_email(email, client_hash, requester_email):
+    print "user data by email"
+    data = database_helper.get_user_data(email)
     
-    if not onlines: 
-        return jsonify({"success": False, "message": "No such token."})    
-    if not verifyToken('data-by-token', onlines['email'], client_hash):
-        return jsonify({"success": False, "message": "Bad hash"})
-
-    try:
-        email = onlines['email']
-    except IndexError: 
-        return jsonify({"success": False, "message": "Token error."})
-
-
-    data = database_helper.get_user_data(email)
-    return jsonify({"success": True, "message": "Ok!", "data": data})
-
-@app.route('/data-by-email/<email>/<token>/<client_hash>', methods=['GET'])
-def get_user_data_by_email(email, token, client_hash):
-    data = database_helper.get_user_data(email)
-    onlines = database_helper.get_online_user_data_token(token)
-
-    requesteremail = onlines['email']
- 
-    if not onlines:
-        return jsonify({"success": False, "message": "Token invalid."})
-
     if data == None:
         return jsonify({"success": False, "message": "No such email."})
 
-    if not verifyToken('data-by-email', requesteremail, client_hash):
+    if not verifyToken('data-by-email', requester_email, client_hash):
         return jsonify({"success": False, "message": "Bad hash."})
 
     else:
         return jsonify({"success": True, "message": "Ok!", "data": data})
 
-@app.route('/messages-by-email/<token>/<email>/<client_hash>', methods=['GET'])
-def get_user_messages_by_email(token, email, client_hash):
+
+@app.route('/messages-by-email/<email>/<client_hash>/<requester_email>', methods=['GET']) 
+def get_user_messages_by_email(email, client_hash, requester_email):
     messages = database_helper.get_user_messages(email)
-    onlines = database_helper.get_online_user_data_token(token)
-    requesteremail = onlines['email']
-
-    if not onlines:
-        return jsonify({"success": False, "message": "Token invalid."})
-
-    if not verifyToken('messages-by-email', requesteremail, client_hash):
+ 
+    if not verifyToken('messages-by-email', requester_email, client_hash):
         return jsonify({"success": False, "message": "Bad hash."})
-
 
     if not messages:
         return jsonify({"success": False, "message": "No messages."})
@@ -155,13 +128,18 @@ def get_user_messages_by_email(token, email, client_hash):
 @app.route('/post', methods=['POST'])
 def post_message():
     message = request.form['message']
-    token = request.form['token']
     to_user = request.form['email']
-    onlines = database_helper.get_online_user_data_token(token)
+    from_user = request.form['from_email']
+    client_hash = request.form['client_hash']
+
+    onlines = database_helper.get_online_user_data(from_user)
+    token = onlines['token']
 
     if not onlines:
         return jsonify({"success": False, "message": "Not logged in."})
-    from_user = onlines['email']
+        
+    if not verifyToken('post', from_user, client_hash):
+        return jsonify({"success": False, "message": "Bad hash."})
 
     try:
         database_helper.add_message(message, from_user, to_user)
@@ -198,12 +176,11 @@ def socket_connect():
                     print 'Deleting socket for: ' + data['email']
                     try:
                         current_sockets.pop(data['email'])
-                    except KeyError: #seems to happen on login after proper logout
+                    except KeyError: 
                         print "No such email"
                     ws.close()
                     print 'Socket closed: ' + data['email']
                     return ''
-
 
         except WebSocketError as e:
             repr(e)
@@ -213,20 +190,18 @@ def socket_connect():
     return ''
 
 
-def verifyToken(route, email, client_hash, post=False):
+def verifyToken(route, email, client_hash):
+
+
     try: 
         token = database_helper.get_online_user_data(email)['token']
     except IndexError:
         return json.dumps({"success": False, "message": "You are not signed in."})
 
-
-    if post:
-        data = '/'+route+"&email="+email+'&token='+token
-    else:
-        data = '/'+route+'/'+token
+    data = '/'+route+'/'+email+'/'+token
 
     server_hash = hashlib.sha1(data.encode('utf-8')).hexdigest()
-
+    
     return client_hash == server_hash
 
 if __name__ == '__main__':

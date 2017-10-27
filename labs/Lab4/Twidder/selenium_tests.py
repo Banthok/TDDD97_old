@@ -97,21 +97,21 @@ try:
 
     print "Signup Test 1: Signup with mismatched Passwords..."
     signup("zyzz@slayers.com", "Aziz", "Shaversian", "Male", "Sydney", "Down undah", "100natty", "100sharky")
-    print driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML')
+    #print driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML')
     assert driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML') == 'Passwords do not match'
     print colored("OK!", "green") 
 
     print "Signup Test 2: Signup with existing email..."
     signup("mjordan@nba.com", "Aziz", "Shaversian", "Male", "Sydney", "Down undah", "100natty", "100natty")  
     time.sleep(1)
-    print driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML')
+    #print driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML')
     assert driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML') == 'Email already in use.'
     print colored("OK!", "green") 
 
     print "Signup Test 3: Do an okay signup..."
     signup("zyzz@slayers.com", "Aziz", "Shaversian", "Male", "Sydney", "Down undah", "100natty", "100natty")  
     time.sleep(1)
-    print driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML')
+    #print driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML')
     assert driver.find_element_by_id("signuperrortextbox").get_attribute('innerHTML') == 'User successfully created.'
     print colored("OK!", "green") 
 
@@ -150,15 +150,15 @@ try:
     print "Usage Test 6: Change your password incorrectly..."
     click_accounttab()
 
-    print "Incorrect old password..."
+    #print "Incorrect old password..."
     change_password("zyzz2011", "mirin1", "mirin1")
     assert "Incorrect password." in driver.find_element_by_id("changepassworderrortextbox").get_attribute("innerHTML")
 
-    print "Too short new password..."
+    #print "Too short new password..."
     change_password("100natty", "123", "123")
     assert "New password too short" in driver.find_element_by_id("changepassworderrortextbox").get_attribute("innerHTML")
 
-    print "Mismatching new passwords..."
+    #print "Mismatching new passwords..."
     change_password("100natty", "1234", "12345")
     assert "New passwords do not match" in driver.find_element_by_id("changepassworderrortextbox").get_attribute("innerHTML")
     print colored("OK!", "green")
@@ -168,7 +168,7 @@ try:
     time.sleep(1)
     assert "Password changed!" in driver.find_element_by_id("changepassworderrortextbox").get_attribute("innerHTML")
 
-    print "Logging out and logging in with new credentials"
+    #print "Logging out and logging in with new credentials"
     driver.find_element_by_id("signoutbutton").click()
 
     login("zyzz@slayers.com", "mrolympia2018")

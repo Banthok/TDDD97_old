@@ -1,11 +1,5 @@
-//import * as CryptoJS from 'crypto-js';
-/**
- * endSession and continueSession functions?
- * Consider formmethod="get" and "post"
- * addEventListeners -> setAttributes?
- */
-
-var browsecontext = { //user looked at while using browsetab
+//user looked at while using browsetab
+var browsecontext = { 
     "email": undefined,
     "firstname": undefined,
     "familyname": undefined,
@@ -14,7 +8,8 @@ var browsecontext = { //user looked at while using browsetab
     "country": undefined
 };
 
-var localdata = { //the logged in user
+//the logged in user
+var localdata = { 
     "email": undefined,
     "firstname": undefined,
     "familyname": undefined,
@@ -29,13 +24,25 @@ var displayView = function()
     var localtokenJSON = localStorage.getItem("localtoken");
     var client_hash; 
 
-    if( localtokenJSON === null ){displayWelcomeView();} // no local token
+    
+    try{
+	// this throws error when localdata isn't filled out
+	var localemail = JSON.parse(localdata).email
+    }
+    catch(err){
+	localemail = undefined
+    }
+
+   
+
+    if( localtokenJSON === null || localemail == undefined ){displayWelcomeView();} // no local token
     else{
 	
-	client_hash = "/data-by-token/" + JSON.parse(localtokenJSON); 
+	client_hash = "/data-by-email/" + JSON.parse(localdata).email + "/" + JSON.parse(localtokenJSON); 
 	client_hash = SHA1(client_hash); 
 
-	get("/data-by-token/" + JSON.parse(localtokenJSON) + "/" + client_hash, 
+	//@app.route('/data-by-email/<email>/<client_hash>/<requester_email>', methods=['GET'])
+	get("/data-by-email/" + JSON.parse(localdata).email + "/" + client_hash + "/" + JSON.parse(localdata).email, 
 	    function(response){
 
 	    if(response.success){
@@ -94,9 +101,6 @@ var displayProfileView = function(dataobject)
 
 window.onload = function()
 {
-    //code that is executed as the page is loaded.
-    //You shall put your own custom code here.
-    //window.alert() is not allowed to be used in your implementation.
     init();
 };
 
@@ -104,7 +108,6 @@ window.onload = function()
 
 var init = function()
 {
-
     displayView();
 };
 
@@ -254,25 +257,22 @@ var loginformSubmit = function()
 	if(response.success)
 	{
 	    connectSocket(loginemail);
-
-	    localStorage.setItem("localtoken", JSON.stringify(response.data));
 	    
-
-	    client_hash = "/data-by-token/" + response.data;
-//	    alert(client_hash); 
+	    localStorage.setItem("localtoken", JSON.stringify(response.data));
+	    var localtokenJSON = localStorage.getItem("localtoken");
+	    
+	    client_hash = "/data-by-email/" + loginemail + "/" + JSON.parse(localtokenJSON) ;
 	    client_hash = SHA1(client_hash);
 	    
-	    get("/data-by-token/" + response.data + "/" + client_hash, 
+	    get("/data-by-email/" + loginemail + "/" + client_hash + "/" + loginemail, 
 		function(response2){
 		if(response2.success)
 		{
 		    localdata = JSON.stringify(response2.data);
-
-		    // testboys
-
 		    displayProfileView(JSON.stringify(response2.data));
 		}
-	    }); 
+	    }); 	    
+ 
 	}
 	else
 	{
@@ -301,8 +301,6 @@ var signupformSubmit = function()
                  "country":      document.getElementById("countryinput").value,
                  "password":     document.getElementById("passwordinput").value
 		};
-
-    //signupresponse = serverstub.signUp(newsignee);
 
     var postData = "email="+       document.getElementById("emailinput").value+"&"+
         "firstname="+    document.getElementById("firstnameinput").value+"&"+
@@ -334,9 +332,9 @@ var switchTabByTabSelector = function()
     {
         tabs[i].style.display = "none";
     }
-    /* this.id == "<tabwewant>selector" */
+
     document.getElementById( this.id.substring( 0, this.id.search( "selector" ))).style.display = "block";
-    /* note the very polly nature of updateWall - to be changed? */
+
     updateWall();
 
 };
@@ -430,7 +428,6 @@ var logOutClick = function()
              }
              else
 	     {
-		 //Something went wrong, pretend everything is alright
 		 SOETBelement.innerHTML=signoutresponse.message;
              }
 
@@ -442,16 +439,13 @@ var selfPostClick = function()
 {
     var content = document.getElementById("homeposttextarea").value;
 
-    client_hash = "/post?message=" + content 
-	+ "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
-	+ "&email=" + JSON.parse(localdata).email 
-	+ "&token=" + JSON.parse(localStorage.getItem("localtoken"));
+    client_hash = "/post/" + JSON.parse(localdata).email + "/" +
+	JSON.parse(localStorage.getItem("localtoken"));
     client_hash = SHA1(client_hash);
     
     post("/post", "message=" + content 
-	 + "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
-	 + "&email="
-	 + JSON.parse(localdata).email 
+	 + "&email=" + JSON.parse(localdata).email 
+	 + "&from_email=" + JSON.parse(localdata).email
 	 + "&client_hash=" + client_hash, 
 	 function(response)
 	 {
@@ -467,15 +461,15 @@ var browsePostClick = function()
     var content = document.getElementById("browseposttextarea").value;
     var email = browsecontext.email;
 
-    client_hash = "/post?message=" + content 
-	+ "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
-	+ "&email=" + JSON.parse(localdata).email 
-	+ "&token=" + JSON.parse(localStorage.getItem("localtoken"));
+    client_hash = "/post/" + JSON.parse(localdata).email + "/" +
+	JSON.parse(localStorage.getItem("localtoken"));
+
     client_hash = SHA1(client_hash);
 
     post("/post", "message="+content 
-	 + "&token=" + JSON.parse(localStorage.getItem("localtoken")) 
-	 + "&email=" + email, 
+	 + "&email=" + email 
+	 + "&from_email=" + JSON.parse(localdata).email
+	 + "&client_hash=" + client_hash,
 	 function(response)
 	 {
              document.getElementById("browseposttextarea").value = "";
@@ -505,11 +499,12 @@ var browseUserClick = function ()
     if(email != "")
     {
 
-	client_hash = "/data-by-email/" + JSON.parse(localtokenJSON); 
+	client_hash = "/data-by-email/" + JSON.parse(localdata).email
+	+ "/" + JSON.parse(localtokenJSON);
+
 	client_hash = SHA1(client_hash);
 
-	get("/data-by-email/" + email + "/"  + JSON.parse(localtokenJSON) + "/"
-	    + client_hash, function(response)
+	get("/data-by-email/" + email + "/"  + client_hash + "/" + JSON.parse(localdata).email, function(response)
 	    {
 		
 		if(response.success)
@@ -547,7 +542,6 @@ var browseUserClick = function ()
 };
 var updateWall = function(email) 
 {
-    /* updateWall to eventually be a callback function? */
     var messages = "";
     var messagesHTML = "";
     var wallelement;
@@ -555,11 +549,12 @@ var updateWall = function(email)
 
     if(email != undefined)
     {
-	client_hash = "/messages-by-email/" + JSON.parse(localtokenJSON);
-	client_hash = SHA1(client_hash);
+	client_hash = "/messages-by-email/" +
+	JSON.parse(localdata).email + "/" + JSON.parse(localtokenJSON);
 
-	get("/messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
-	    + email + "/" + client_hash, function(response)
+	client_hash = SHA1(client_hash);
+	
+	get("/messages-by-email/" + email + "/" + client_hash + "/" + JSON.parse(localdata).email, function(response)
 	    {
 		if(response.success){
 		    messages=response.data; 
@@ -575,15 +570,17 @@ var updateWall = function(email)
 		    wallelement = document.getElementById("browsewall");
 		    wallelement.innerHTML = messagesHTML ;
 		}
+
 	    });
     }
     else
     {
-	client_hash = "/messages-by-email/" + JSON.parse(localtokenJSON);
+	client_hash = "/messages-by-email/" +
+	JSON.parse(localdata).email + "/" + JSON.parse(localtokenJSON);
+
 	client_hash = SHA1(client_hash);
 	
-	get("/messages-by-email/" + JSON.parse(localtokenJSON)  + "/"
-	    + JSON.parse(localdata).email + "/" + client_hash, function(response)
+	get("/messages-by-email/" + JSON.parse(localdata).email + "/" + client_hash + "/" + JSON.parse(localdata).email , function(response)
 	    {
 		if(response.success){
 		    messages=response.data; 
@@ -596,6 +593,7 @@ var updateWall = function(email)
 		    wallelement = document.getElementById("selfwall");
 		    wallelement.innerHTML = messagesHTML;
 		}
+		
 	    });
     }
 };

@@ -54,7 +54,9 @@ def add_user(email, password, salt, firstname, familyname, gender, city, country
 def get_online_user_data(email):
     user_data = query_db('select * from online_users where email=? ',
                          [email])
-    return user_data[0]
+    if user_data:
+        return user_data[0]
+    return
 
 def get_online_user_data_token(token):
     user_data = query_db('select * from online_users where token=? ',
